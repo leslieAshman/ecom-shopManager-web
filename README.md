@@ -1,0 +1,1 @@
+# ecom-shopManager-web
