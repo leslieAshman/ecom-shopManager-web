@@ -1,0 +1,49 @@
+{
+  "title": "Notifications",
+  "read_text": "Read",
+  "unread_text": "Unread",
+
+  "today": "Today",
+  "previous": "Previous",
+  "clear_all": "Clear All",
+
+  "mark_as_read_text": "mark as read",
+  "mark_as_unread_text": "mark as unread",
+  "mark_all_as_read_text": "mark all as read",
+  "mark_all_as_unread_text": "mark all as unread",
+  "noNotifications": "You have no new notifications",
+  "offerAccepted": "Your offer has been accepted",
+  "bidAccepted": "Your bid has been accepted",
+  "minAgo": "min ago",
+  "minsAgo": "mins ago",
+  "hourAgo": "hour ago",
+  "hoursAgo": "hours ago",
+  "dayAgo": "day ago",
+  "daysAgo": "days ago",
+  "messageTypes": {
+    "portalstripepaymentreceived": {
+      "body": "Your payment was sucessful. Your available balance will be updated to reflect this payment.",
+      "subject": "Payment Received"
+    },
+    "portalfeesadded": {
+      "body": "Your Cult Wine Investment fees are due. Your available balance has now been updated to reflect these fees. If you wish to top up your account, please go to the accounts page.",
+      "subject": "Fees Due"
+    },
+    "portalwinesold": {
+      "body": "Congratulations, your wine has sold. You will be notified when the funds have cleared.",
+      "subject": "Wine Sold"
+    },
+    "portalnewofferavailable": {
+      "body": "Check out the invest page to see what's new.",
+      "subject": "New Wines Available"
+    },
+    "portalunsettleddeal": {
+      "body": "Please go to the accounts page to add funds to your account.",
+      "subject": "Awaiting Payment"
+    },
+    "portalpaymentreceivedforwinesold": {
+      "body": "The payment for the sale of your wine has cleared, this will be reflected in your account balance.",
+      "subject": "Funds Have Cleared"
+    }
+  }
+}

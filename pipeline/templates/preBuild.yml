@@ -1,0 +1,31 @@
+parameters:
+  - name: nodeVersion
+    type: string
+    default: 16.x
+
+steps:
+  - task: NodeTool@0
+    displayName: Use Node ${{ parameters.nodeVersion }}
+    inputs:
+      versionSpec: ${{ parameters.nodeVersion }}
+  - task: npmAuthenticate@0
+    displayName: npm Authenticate .npmrc
+    inputs:
+      workingFile: .npmrc
+  - task: Npm@1
+    displayName: npm install
+    inputs:
+      command: install
+      verbose: false
+  - task: Npm@1
+    displayName: npm run lint:ci
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: run lint:ci
+  - task: Npm@1
+    displayName: npm run test:ci
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: run test:ci

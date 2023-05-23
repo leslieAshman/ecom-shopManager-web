@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+
+.btn {
+  @apply focus:ring-1 font-normal rounded-2xl text-14 px-5 h-[40px] focus:outline-none;
+}
+
+.btn-primary {
+  @apply text-white bg-vine hover:bg-vineHover;
+}
+
+.btn-outline {
+  @apply text-black border border-vine btn text-14 font-normal rounded-full w-full;
+}
+
+.btn-accent {
+  @apply btn text-14 font-normal bg-orange rounded-full mt-8  text-black w-full hover:bg-orangeHover;
+}
+
+.btn-disabled {
+  @apply text-gray-400 bg-gray-300 pointer-events-none;
+}
+
+.btn-link {
+  @apply inline-block underline align-baseline outline-none mr-1 mb-1 py-2 bg-transparent text-sm focus:outline-none;
+}
+
+.btn-dropdown {
+  @apply inline-flex items-center min-w-[154px] w-full h-[24px]  bg-inherit py-2 text-20 text-gray-700;
+}
+
+.disabled {
+  @apply pointer-events-none opacity-50;
+}
+
+.img {
+  @apply min-w-full shrink-0 object-cover  min-h-full;
+}
+
+.img-container {
+  @apply flex justify-center items-center overflow-hidden;
+}
+
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'GTFlexa';
+    font-weight: 300;
+    src: url('../public/fonts/GT-Flexa-Standard-Light.ttf');
+  }
+
+  @font-face {
+    font-family: 'GTFlexa';
+    font-weight: 400;
+    src: url('../public/fonts/GT-Flexa-Standard-Regular.ttf');
+  }
+
+  @font-face {
+    font-family: 'GTFlexa';
+    font-weight: 500;
+    src: url('../public/fonts/GT-Flexa-Standard-Medium.ttf');
+  }
+}
+
+.prismic-content p {
+  margin: 1em 0px;
+}
+
+.prismic-content ul,
+ol {
+  display: block;
+  list-style: disc outside none;
+  margin: 1em 0;
+  padding: 0 0 0 40px;
+}
+
+.prismic-content ol {
+  list-style-type: decimal;
+}
+
+.prismic-content ul ul,
+ol ul {
+  list-style-type: circle;
+  margin-left: 15px;
+}
+.prismic-content ol ol,
+ul ol {
+  list-style-type: lower-latin;
+  margin-left: 15px;
+}
+.prismic-content li {
+  display: list-item;
+}
+
+.prismic-content .block-img {
+  padding: 10px 0;
+}
+
+.prismic-content h1 {
+  font-size: 2em;
+  font-weight: bolder;
+}
+
+.prismic-content h2 {
+  font-size: 1.5em;
+  font-weight: bolder;
+}
+
+.prismic-content h3 {
+  font-size: 1.17em;
+  font-weight: bolder;
+}
+
+.prismic-content h4 {
+  font-size: 1em;
+  font-weight: bolder;
+}
+
+.prismic-content h5 {
+  font-size: 0.83em;
+  font-weight: bolder;
+}
+
+.prismic-content h6 {
+  font-size: 0.67em;
+  font-weight: bolder;
+}

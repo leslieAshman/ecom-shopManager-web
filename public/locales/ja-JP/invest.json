@@ -1,0 +1,11 @@
+{
+  "current_tab": "現在のオファー",
+  "previous_tab": "以前のオファー",
+  "slideOutTitle": "ワイン詳細",
+  "slideout": {
+    "title": "投資オファー",
+    "invest_now_text": "今購入する",
+    "notify_when_available_text": "在庫があるときに通知ください",
+    "price": "価格"
+  }
+}

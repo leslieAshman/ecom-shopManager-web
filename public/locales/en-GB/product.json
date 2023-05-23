@@ -1,0 +1,104 @@
+{
+  "dataValuations": {
+    "tableHeadings": {
+      "date": "date",
+      "case": "case",
+      "reference_number": "reference number",
+      "rotation_number": "rotation number",
+      "status": "status",
+      "location": "location"
+    }
+  },
+
+  "wineDetails": {
+    "title": "Wine details",
+    "forSale": "for sale",
+    "unit": "unit",
+    "invest_more_button_text": "Buy Request",
+    "sell_holdings_button_text": "Sell Request",
+    "units_owned": "Units owned",
+    "value_per_unit": "Value per unit",
+    "total_value": "Total value",
+    "include_fees": "Include fees",
+    "data_and_valuations": "Data and valuations",
+    "live_ex-performance_chart_description": "Liv-ex historic market price data is denominated in 12x75cl in GBP by default. Monthly price points from release.",
+    "live_ex_chart_title": "Liv-ex market price performance graph",
+
+    "arrangeDelivery": {
+      "buttonText": "Request delivery",
+      "title": "Get your wine delivered",
+      "subTitle": "Schedule a home delivery. Subject to terms and conditions.",
+      "success_send-request": "We have successfully sent your invest more request. We will be in touch with you shortly to discuss this further",
+      "fail_send-request": "Unfortunately we are unable to submit your request. Please contact us to discuss your request.",
+      "unit_count_above_max": "Please revise the number of units for delivery as this currently exceeds the number of units you have in your current holdings.",
+      "unit_count_below_min": "Number of units must be greater than 1",
+      "unit_for_delivery": "Units for delivery",
+      "units_required_text": "Number of units for delivery required",
+      "region": "State/Province/Region’",
+      "city": "City",
+      "address_1": "Address line 1",
+      "address_2": "Address line 2",
+      "address_3": "Address line 3",
+      "state": "State",
+      "postcode": "Postcode/Zip",
+      "country": "country",
+      "submit_request": "submit request",
+      "saved_address_text": "Save this address as default delivery address.",
+      "select_delivery_address_text": "Select delivery address",
+      "add_new_address_text": "Add new address"
+    },
+
+    "investMore": {
+      "current-market-price": "Current market price",
+      "custom-price-bid-request": "Custom price bid request",
+
+      "title": "Invest More",
+      "custom_price_text": "custom price",
+      "pricing_choice": "pricing choice",
+      "submit_request": "submit request",
+      "number_of_units_text": "number of units",
+      "total": "total",
+      "please_select_text": "please select",
+      "price_required": "Custom price is required",
+      "price_below_min": "Enter an amount greater than {{amount}}",
+      "success_send-request": "We have successfully sent your request and we will be in touch with you shortly to discuss this further",
+      "fail_send-request": "Unfortunately we are unable to submit your request. Please contact us to discuss your request."
+    },
+
+    "sellHolding": {
+      "title": "Sell Holdings",
+      "unit_count_above_max": "The number of units cannot be higher than the number of your existing holdings.",
+      "unit_count_below_min": "Number of units must be greater than 1",
+      "fail_send-request": "Unfortunately we are unable to submit your request. Please contact us to discuss.",
+      "price_required": "Reserve price is required",
+      "price_below_min": "Enter an amount greater than {{amount}}",
+      "price_exceed_constraint": "Price exceed maximum amount of {{amount}} which is 5% below market price.",
+      "submit_request": "Submit request",
+      "number_of_units_text": "Number of units",
+      "reserve_price_text": "Reserve price",
+      "reason_for_sale_text": "Reason for sale",
+      "total_market_value_text": "Total market value",
+      "total_reserve_price_text": "Total reserve price",
+      "reserve_price_info": "We recommend setting a reserve price 5% below the market value in order to ensure a timely sale.",
+      "contactUs_info": "if you have any questions, please contact us.",
+      "saleReasons": {
+        "forRefund": "Raise money from my portfolio",
+        "newPurchase": "Raise capital for new purchases",
+        "reBalance": "Rebalance due to underperformance",
+        "lockInProfits": "Lock in profits",
+        "please_select": "Please select"
+      }
+    },
+
+    "valuations": {
+      "dealDate": "Deal date:",
+      "total-purchase-price": "Total purchase price",
+      "total-upfront-fees": "Total upfront fees",
+      "market-price": "Market price",
+      "profit-loss": "Profit/Loss",
+      "per-unit": "per unit",
+      "total-cost": "Total cost",
+      "profit-loss-including-fees": "Profit/Loss(inc.fees)"
+    }
+  }
+}

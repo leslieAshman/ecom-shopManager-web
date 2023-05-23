@@ -1,0 +1,127 @@
+type ProfitAndLossHistory_GQL {
+  date: String!
+  profitAndLoss: Int!
+}
+
+type HoldingStock {
+  rotationNumber: String!
+  status: String!
+  location: String!
+}
+
+type HistoricMarketPrices {
+  date: String!
+  marketPrice: Int!
+}
+
+type Get_Stock {
+  id: String!
+  portfolioId: Int!
+  lwin18: Int!
+  wineName: String!
+  vintage: String!
+  region: String!
+  cultWinesAllocationRegion: String!
+  dealDate: String!
+  dealRef: String!
+  dealCCY: String
+  qty: Int!
+  unit: String
+  unitCount: Int!
+  qtyForSale: Int!
+  priceForSale: Int!
+  costPerUnit: Int!
+  totalCost: Int!
+  valuePerUnit: Int!
+  valuePerBottle: Int!
+  totalValue: Int!
+  changedPct: Int!
+  mgmtFeePerUnit: Int!
+  totalMgmtFee: Int!
+  costWithMgmtFeePerUnit: Int!
+  totalCostWithMgmtFee: Int!
+  netPosition: Int!
+  netPositionPerUnit: Int!
+  profitAndLoss: Int!
+  profitAndLostPerUnit: Int!
+  holdingStocks: [HoldingStock]
+  historicMarketPrices: [HistoricMarketPrices]
+}
+
+type Event_And_Experience {
+  id: String!
+  title: String!
+  price: Int!
+  date: String!
+  time: String!
+  location: String!
+  imageUrl: String
+}
+
+type Learning_Hub {
+  id: String!
+  title: String!
+  description: String!
+  date: String!
+  imageUrl: String
+}
+
+type UserSettings {
+  language: String!
+  currency: String!
+  email: String
+  useLoginEmail: Boolean!
+}
+
+type MiscellaneousItem {
+  id: String!
+  value: String
+  text: String!
+  symbol: String
+  iconUrl: String
+}
+
+type MiscellaneousType {
+  languages: [MiscellaneousItem]
+  currencies: [MiscellaneousItem]
+  paymentFrequencies: [MiscellaneousItem]
+}
+
+enum EmailValidationResultType {
+  VALID
+  INVALID
+  REGISTERED
+}
+
+type EmailValidationResult {
+  result: EmailValidationResultType
+  isSuccess: Boolean
+}
+
+type MgmtFeeDetail {
+  id: String!
+  name: String!
+  valuationDate: String!
+  feeType: String!
+  portfolioValue: Int
+  offsetValue: String
+  feeAmount: Int!
+  applied: Int!
+  invoiceNumber: String!
+  invoiceDate: String!
+  status: String!
+}
+
+extend type Notification {
+  # id: String!
+  subject: String!
+  dateTime: String!
+  body: String!
+  # isRead: Boolean!
+}
+
+extend type Query {
+  userSettings: UserSettings
+  miscellaneous: MiscellaneousType
+}
+

@@ -1,0 +1,48 @@
+{
+  "title": "通知",
+  "read_text": "既読",
+  "unread_text": "未読",
+  "mark_as_read_text": "既読としてマーク",
+  "mark_as_unread_text": "未読としてマーク",
+  "mark_all_as_read_text": "全てを既読とする",
+  "mark_all_as_unread_text": "全てを未読とする",
+  "noNotifications": "新しい通知はありません",
+  "offerAccepted": "売り注文を預かりました",
+  "bidAccepted": "買い注文を預かりました",
+  "minAgo": "分前",
+  "minsAgo": "分前",
+  "hourAgo": "時間前",
+  "hoursAgo": "時間前",
+  "dayAgo": "日前",
+  "daysAgo": "日前",
+  "today": "今日",
+  "previous": "前",
+  "clear_all": "すべてクリア",
+
+  "messageTypes": {
+    "portalstripepaymentreceived": {
+      "body": "カルトワインインベストメントはお客様からポータル経由でお支払い受け取りました。残高も更新されます",
+      "subject": "ポータル経由でお支払済み"
+    },
+    "portalfeesadded": {
+      "body": "カルトワインインベストメントは新規の費用を計上しました。口座残高もアップデートされます",
+      "subject": "費用追加"
+    },
+    "portalwinesold": {
+      "body": "カルトワインインベストメントはお客さまのワインを売却しました。口座残高もアップデートされます",
+      "subject": "販売されたワイン"
+    },
+    "portalnewofferavailable": {
+      "body": "カルトワインインベストメントは新規のオファーが記載されましたのでInvestページからご確認ください",
+      "subject": "新規のオファー更新されました"
+    },
+    "portalunsettleddeal": {
+      "body": "カルトワインインベストメントはお客様からのお支払いを待っています。Accountsページから手続きお願いします",
+      "subject": "未精算取引"
+    },
+    "portalpaymentreceivedforwinesold": {
+      "body": "カルトワインインベストメントはお客さまのワインを売却しました。口座残高もアップデートされます。残高が更新されるまで14日間程かかる場合あります",
+      "subject": "売却したワインが精算されました"
+    }
+  }
+}

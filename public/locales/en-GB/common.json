@@ -1,0 +1,97 @@
+{
+  "overview": "Overview",
+  "currentlyUnavailable": "Currently unavailable",
+  "invest": "Invest",
+  "cellar": "Cellar",
+  "accounts": "Account",
+  "discover": "Discover",
+  "notifications": "Notifications",
+  "portfolio": "Portfolio",
+  "contact": "Contact us",
+  "done": "done",
+  "submit": "Submit",
+  "success": "Success!",
+  "cancel": "Cancel",
+  "edit": "Edit",
+  "ascending": "Ascending",
+  "descending": "Descending",
+  "showCompactList": "Show compact list",
+  "exportToXls": "Export.xlsx",
+  "showMore": "Show more",
+  "showLess": "Show less",
+  "order": "Order",
+  "apply": "Apply",
+  "ok": "OK",
+  "view": "View",
+  "hide": "Hide",
+  "show": "Show",
+  "result": "result",
+  "results": "Results",
+  "regions": {
+    "allregion": "All regions",
+    "allregions": "All regions",
+    "rhone": "Rhone",
+    "usa": "USA",
+    "bordeaux": "Bordeaux",
+    "burgundy": "Burgundy",
+    "italy": "Italy",
+    "rest-of-world": "Rest of World",
+    "champagne": "Champagne",
+    "other": "Other"
+  },
+  "table": {
+    "toolbar": {
+      "winesSelected": "Wines selected"
+    },
+    "pagination": {
+      "resultsPerPage": "Results per page",
+      "firstPage": "first page",
+      "lastPage": "last page",
+      "previousPage": "previous page",
+      "nextPage": "next page"
+    }
+  },
+  "thankYou": {
+    "title": "thank you!",
+    "subTitle": "we have received your invest request. We will be in touch shortly to for further discussion.",
+    "buttonText": "done"
+  },
+  "noConnection": {
+    "title": "no connection",
+    "subTitle": "unable to connect to the internet. Please try again.",
+    "buttonText": "try again"
+  },
+  "generalSuccess": {
+    "title": "Success",
+    "subTitle": "Successfully updated",
+    "buttonText": "Close"
+  },
+  "paymentSuccess": {
+    "title": "Success",
+    "subTitle": "Your payment was successful.",
+    "subTitle_recurring": "Your reaccuring payment has been set up.",
+    "buttonText": "Done"
+  },
+  "somethingWentWrong": {
+    "title": "Oops",
+    "subTitle": "Things did not go as planned",
+    "buttonText": "try again"
+  },
+  "errorResult": {
+    "title": "Error",
+    "subTitle": "We are unable to process your request right now please try again or feel free to contact us",
+    "buttonText": "try again"
+  },
+  "noResult": {
+    "title": "No result found",
+    "subTitle": ""
+  },
+  "noSearchResult": {
+    "title": "No result found",
+    "subTitle": "We couldn’t find any search result. Please try search for wine name."
+  },
+  "loading": {
+    "title": "Processing",
+    "subTitle": "Please wait while we process your request"
+  }
+}

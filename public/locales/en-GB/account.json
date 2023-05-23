@@ -1,0 +1,238 @@
+{
+  "title": "My account",
+
+  "addressDetails": {
+    "deleteAddress": {
+      "modalTitle": "Delete address",
+      "modalDescription": "Are you sure you wish to delete this address?",
+      "successNotificationMessage": "Address has successfully been deleted",
+      "failureNotificationMessage": "Failed to delete address, please try again"
+    },
+    "billingAddress": {
+      "title": "Billing address",
+      "add": "Add billing address",
+      "edit": "Edit billing address"
+    },
+    "deliveryAddress": {
+      "title": "Delivery address",
+      "add": "Add delivery address",
+      "edit": "Edit delivery address"
+    },
+    "createSuccess": "Address has been added successfully!",
+    "createFailure": "Failed to create a new address",
+    "editSuccess": "Address has been edited successfully!",
+    "editFailure": "Failed to edit the address",
+    "addressModal": {
+      "add": {
+        "failure": {
+          "title": "Failed to add address"
+        },
+        "success": {
+          "message": "Address added"
+        }
+      },
+      "edit": {
+        "failure": {
+          "title": "Failed to edit address"
+        },
+        "success": {
+          "message": "Address updated"
+        }
+      },
+      "failure": {
+        "message": "Please try again"
+      },
+      "success": {
+        "title": "Success!"
+      }
+    },
+    "addressForm": {
+      "addressLine1": "Address line 1",
+      "addressLine2": "Address line 2",
+      "addressLine3": "Address line 3",
+      "town": "City",
+      "county": "County",
+      "state": "State",
+      "postcode": "Postcode",
+      "zipcode": "Zip code",
+      "country": "Country"
+    }
+  },
+  "paymentDetails": {
+    "withdrawableForm": {
+      "noAccountNumber": "Account number must be entered",
+      "noAccountName": "Account name must be entered",
+      "noSortCode": "Sort Code must be entered",
+      "noIban": "IBAN must be entered",
+      "noBic": "BIC must be entered",
+
+      "exceedAccountNumberLimit": "Account number - 8 characters",
+      "exceedSortCodeLimit": "Sort code - 6 characters",
+      "exceedIbanLimit": "IBAN - 34 characters",
+      "exceedBicLimit": "BIC - 8 or 11 characters",
+      "greaterThanMinRequired": "The amount you want to withdraw need to be greater than {{minAmount}}",
+      "exceedWalletBalance": "The amount you want to withdraw is higher than your available balance",
+      "title": "Payment details",
+      "subTitle": "Please enter your name as it appears on your bank account",
+      "accountName": "Your name",
+      "sortCode": "Sort Code",
+      "accountNumber": "Account Number",
+      "iban": "IBAN",
+      "bic": "BIC",
+
+      "confirmButton": "Confirm"
+    }
+  },
+
+  "sideMenu": {
+    "contact_rm": "Contact Us"
+  },
+  "text": {
+    "topup": "Top up",
+    "withdraw_funds": "Withdraw funds"
+  },
+  "slideout": {
+    "topup": {
+      "recurring-payments": "Set Up Reoccurring Payment",
+      "credit-card": "Credit/Debit Top Up",
+      "bank-transfer": "Bank Transfer ",
+      "title": "Top up funds",
+      "select_portfolio_title": "Portfolio",
+      "payment_placeholder_text": "Select payment method",
+      "payment_frequency_title": "Frequency",
+      "payment_method_title": "Payment method",
+      "top_up_amount": "Top up amount",
+      "submit_text": "Submit",
+      "portfolio_placeholder_text": "Select portfolio",
+      "next": "next",
+      "current_fee_model_info": "Portfolios on one of our current investment tiers* can be topped up by card, bank transfer or subscription payment by selecting the account from the dropdown above. Suppose your investment portfolio(s) were opened before October 2020. In that case, your portfolio is on one of our legacy plans, and you will not be able to invest further funds or make new capital purchases without opening a new portfolio. Upgrade and Merge options are also available using one of our current investment tiers*. Contact your Relationship Manager for further details or discuss opening your new portfolio account or alternative options.",
+      "recurring_payment_text": "Recurring payment",
+      "frequency_text": "Frequency",
+      "start_date_text": "Start date",
+      "summary_text": "A recurring top up of {{amount}} will repeat monthly on the {{date}}",
+      "success_text": "{{amount}} has been topped up to your account. Please contact us if you have questions. ",
+      "bankTransfer": {
+        "copied_text": "copied...",
+        "title": "Bank transfer information",
+        "disclaimer": "Please note, when transferring funds to Cult Wines Ltd using the bank transfer method, due to processing times, it may take up to 5 working days before the funds will appear on your available balance",
+        "subTitle": "Please find our bank details below. Important! Do not forget to add the reference code."
+      },
+      "recurring_payment_info_title": "Please note",
+      "recurring_payment_info": "The first reoccurring payment you set up will be taken from your account today, and subsequent payments will be taken out regularly, based on the frequency you specify with us today"
+    }
+  },
+  "profile": {
+    "billing_address_text": "Billing Address",
+    "page-title": "Personal Information",
+    "change-request": "Change request",
+    "firstname": "First name",
+    "lastname": "Last name",
+    "dob": "Date of birth",
+    "email": "Email",
+
+    "country": "country",
+    "region": "State/Province/Region’",
+    "city": "City",
+    "address_1": "Address line 1",
+    "address_2": "Address line 2",
+    "address_3": "Address line 3",
+    "postcode": "Postcode/Zip",
+    "state": "State"
+  },
+  "contactUs": {
+    "email": "Email",
+    "phone-call": "Phone call",
+    "contact-method-text": "Preferred contact method",
+    "contact-method-placeholder-text": "Please select",
+    "title_text": "Contact us",
+    "subTitle_text": "Please use the form below to forward your message directly to a member of our team.",
+    "contact-text": "Contact details",
+    "subject-text": "Subject",
+    "message-text": "Message",
+    "send-message": "send message",
+    "send-request-success-text": "Message sent successfully",
+    "send-request-error-text": "Unable to send message",
+
+    "financial": "Payment/Financial Query",
+    "general": "General Query",
+    "relationMgr": "Contact my Relationship Manager",
+    "support": "Support Request",
+    "updateDetails": "Update my Details"
+  },
+
+  "settings": {
+    "language_text": "Language",
+    "currency_text": "Preferred currency",
+    "email-text": "Email",
+    "change_password_text": "Change Password",
+    "edit_text": "Edit",
+    "cancel_text": "Cancel",
+    "save_text": "Save",
+    "email_authentication_text": "Email Authentication",
+    "preferences_text": "Preferences",
+    "same_as_login": "Same as login",
+    "change_password": "Change Password",
+    "current_password_text": "Current password",
+    "new_password_text": "New password",
+    "confirm_new-password_text": "Confirm New Password",
+    "password_instructions": "minLengthTest;caseTest;digitTest;specialCharTest;sameTest",
+    "minLengthTest": "Minimum 8 characters",
+    "caseTest": "Must contain both uppercase and lowercase",
+    "digitTest": "At least 1 numeric character (0-9)",
+    "specialCharTest": "At least 1 special character ($%?*&...)",
+    "sameTest": "Password same",
+
+    "password_changed_success_text": "Password updated successfully",
+    "password_changed_error_text": "Unable to update password"
+  },
+
+  "recurringPayments": {
+    "page-title": "Credit card payment",
+    "subscription_details": "Recurring amount of {{amount}} paid {{frequency}}"
+  },
+  "overviewReport": {
+    "pending_balance_text": "Pending balance",
+    "account_balance_text": "Account balance",
+    "pending_balance_tooltip": "The total current pending balance of your account with Cult Wines, including pending debits and credits. The total will include pending uncleared funds from the sale of stock, and pending invoices for stock and fees.",
+    "managementFees": {
+      "tab_title": "Management Fees",
+      "total_mgmt_fees": "Total Management Fees",
+      "total_outstanding_fees": "Total Management Fees Outstanding",
+      "total_paid_fees": "Total Management Fees Paid",
+      "table": {
+        "headers": {
+          "accountHolderName": "Account Name",
+          "valuationDate": "Valuation Date",
+          "feeType": "Fee Type",
+          "portfolioValue": "Portfolio Value",
+          "offsetValue": "Offset Value",
+          "feeAmount": "Fee Amount",
+          "appliedPct": "Applied %",
+          "invoiceNumber": "Invoice Number",
+          "invoiceDate": "Invoice Date"
+        }
+      },
+      "filter_all_text": "All management fees",
+      "filter_outstanding_text": "Outstanding",
+      "filter_paid_text": "Paid",
+      "export_filename": "Cult Wine Investment management-fees",
+      "sildeout_title": "Management fees details",
+      "nil_text": "N/A",
+      "slideout": {
+        "fees_details_title": "Management fees details",
+        "fees_explained_title": "Management fees explained"
+      },
+      "explained": {
+        "annualMgmtFees": "Cult Wine Investment calculates your management fee at the end of each month by pro-rating your tier-based annual management fee % for the month and applying it to your portfolio value on that date. Depending on where the purchase date and settlement date fall for stock purchased, you may see offset fees or credits to account for the difference. The management fees will accrue as a debit on your account throughout the investment period. Any outstanding balance of fees that have accrued will be offset against unallocated funds held on your account on a monthly basis.",
+        "latePaidStockFees": "The late paid stock fee is the amount of management fees accrued from the date of purchase to the date of settlement if the stock is not purchased and settled within the same month. The late paid stock fee is not a late charge, nor is it an additional cost to you. Due to the change in fee calculation methodology, we will add only this fee to periods up to November 2022. The management fees will accrue as a debit on your account throughout the investment period. Any outstanding balance of fees that have accrued will be offset against unallocated funds held on your account on a monthly basis.",
+        "cancelledDealRebate": "Cult Wine Investment calculates your management fee at the end of each month by pro-rating your tier-based annual management fee % for the month and applying it to your portfolio value on that date. From November 2022, fees are generated based on the value of your portfolio, whether or not we have received a settlement. If you cancel a purchase after fees have already been incurred, you will receive these fees back in the form of a cancelled deal rebate. This rebate is a minus figure and will be removed from the total fees outstanding."
+      }
+    }
+  },
+  "titles": {
+    "overview": "Overview",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help-center": "Help center"
+  }
+}

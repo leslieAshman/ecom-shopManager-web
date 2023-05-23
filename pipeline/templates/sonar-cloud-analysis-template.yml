@@ -1,0 +1,58 @@
+parameters:
+  - name: projectKey
+    type: string
+
+  - name: organization
+    type: string
+    default: cultwines-sonarcloud-key
+
+  - name: sonarCloudRef
+    type: string
+    default: sonarCloudConnection
+
+  - name: sonarCloudScannerMode
+    type: string
+    default: CLI
+
+  - name: sonarCloudConfigMode
+    type: string
+    default: manual
+
+  - name: projectName
+    type: string
+
+  - name: nodeVersion
+    type: string
+    default: 16.x
+
+jobs:
+  - job: Job_1
+    displayName: Sonar Cloud Job Agent
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - checkout: self
+      - task: SonarCloudPrepare@1
+        displayName: Prepare analysis on SonarCloud
+        inputs:
+          SonarCloud: ${{ parameters.sonarCloudRef }}
+          organization: ${{ parameters.organization }}
+          scannerMode: ${{ parameters.sonarCloudScannerMode }}
+          cliProjectName: ${{ parameters.projectName }}
+          configMode: ${{ parameters.sonarCloudConfigMode }}
+          cliProjectKey: ${{ parameters.projectKey }}
+
+      - template: preBuild.yml
+        parameters:
+          nodeVersion: ${{ parameters.nodeVersion }}
+
+      - task: PublishCodeCoverageResults@1
+        displayName: Publish code coverage from $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+        enabled: False
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+      - task: SonarCloudAnalyze@1
+        displayName: Run Code Analysis
+      - task: SonarCloudPublish@1
+        displayName: Publish Quality Gate Result

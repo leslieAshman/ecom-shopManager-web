@@ -1,0 +1,234 @@
+{
+  "title": "マイアカウント",
+
+  "overviewReport": {
+    "pending_balance_text": "保留中の残高",
+    "account_balance_text": "勘定残高",
+    "pending_balance_tooltip": "振込・出金・購入・売却等全ての金額を含めた残高となります",
+    "managementFees": {
+      "tab_title": "管理費",
+      "total_mgmt_fees": "管理費合計",
+      "total_outstanding_fees": "管理費未精算",
+      "total_paid_fees": "管理費精算済み",
+      "table": {
+        "headers": {
+          "accountHolderName": "口座名",
+          "valuationDate": "評価日",
+          "feeType": "費用タイプ",
+          "portfolioValue": "ポートフォリオ評価",
+          "offsetValue": "Offset Value",
+          "feeAmount": "費用額",
+          "appliedPct": "対象となる％",
+          "invoiceNumber": "請求書番号",
+          "invoiceDate": "請求書日付"
+        }
+      },
+      "filter_all_text": "管理費全額",
+      "filter_outstanding_text": "未払い",
+      "filter_paid_text": "お支払済み",
+      "export_filename": "カルトワインインベストメント管理費",
+      "sildeout_title": "管理費明細",
+      "nil_text": "N/A",
+      "slideout": {
+        "fees_details_title": "管理費明細",
+        "fees_explained_title": "管理費の説明"
+      },
+      "explained": {
+        "annualMgmtFees": "年間管理費に関しては利用規約を参照ください",
+        "latePaidStockFees": "Late paid stock feeに関してはお手数ですがお客様の担当者にご連絡ください",
+        "cancelledDealRebate": "Cult Wine Investment calculates your management fee at the end of each month by pro-rating your tier-based annual management fee % for the month and applying it to your portfolio value on that date. From November 2022, fees are generated based on the value of your portfolio, whether or not we have received a settlement. If you cancel a purchase after fees have already been incurred, you will receive these fees back in the form of a cancelled deal rebate. This rebate is a minus figure and will be removed from the total fees outstanding."
+      }
+    }
+  },
+  "contactUs": {
+    "email": "Eメール",
+    "phone-call": "電話",
+    "contact-method-text": "連絡方法",
+    "contact-method-placeholder-text": "選択してください",
+    "title_text": "お問い合わせ",
+    "subTitle_text": "弊社の担当者とメッセージする場合、下記のフォームに記入してください",
+    "contact-text": "連絡先",
+    "subject-text": "件名",
+    "message-text": "メッセージ",
+    "send-message": "メッセージ送信",
+    "send-request-success-text": "メッセージ送信済み",
+    "send-request-error-text": "メッセージ送ることできませんでした",
+    "financial": "振込・口座に関してのお問い合わせ",
+    "general": "一般のお問い合わせ",
+    "relationMgr": "口座担当者に連絡する",
+    "support": "サポートの依頼",
+    "updateDetails": "詳細をアップデートする"
+  },
+  "recurringPayments": {
+    "page-title": "暮れ時とカードでの精算",
+    "subscription_details": "{{frequency}}{{amount}}定期的な金額"
+  },
+  "settings": {
+    "language_text": "言語",
+    "currency_text": "使う言語",
+    "email-text": "メールアドレス",
+    "change_password_text": "パスワード変更",
+    "edit_text": "変更",
+    "cancel_text": "キャンセル",
+    "save_text": "保存",
+    "email_authentication_text": "メールアドレス確認",
+    "preferences_text": "お気に入り",
+    "same_as_login": "ログインと同じ",
+    "change_password": "パスワード変更",
+    "current_password_text": "現在のパスワード",
+    "new_password_text": "新しいパスワード",
+    "confirm_new-password_text": "新しいパスワードの確認",
+    "password_instructions": "minLengthTest;caseTest;digitTest;specialCharTest;sameTest",
+    "minLengthTest": "最低8文字",
+    "caseTest": "大文字と小文字が必要です",
+    "digitTest": "最低1数字",
+    "specialCharTest": "最低１特別記号",
+    "sameTest": "同じパスワード",
+
+    "password_changed_success_text": "パスワードを変更しました",
+    "password_changed_error_text": "パスわあーどを変更することができませんでした"
+  },
+  "profile": {
+    "billing_address_text": "請求書住所",
+    "page-title": "個人情報",
+    "change-request": "変更依頼",
+    "firstname": "名字",
+    "lastname": "苗字",
+    "dob": "生年月日",
+    "email": "メールアドレス",
+
+    "country": "国",
+    "region": "県・地域",
+    "city": "都市",
+    "address_1": "住所１",
+    "address_2": "住所２",
+    "address_3": "住所３",
+    "postcode": "通便番号",
+    "state": "県・地域"
+  },
+  "slideout": {
+    "topup": {
+      "recurring-payments": "定期的なお支払いを設定",
+      "credit-card": "入出金",
+      "bank-transfer": "送金",
+      "title": "追加入金",
+      "select_portfolio_title": "ポートフォリオ",
+      "payment_placeholder_text": "お支払い方法を選択",
+      "payment_frequency_title": "頻度",
+      "payment_method_title": "お支払方法",
+      "top_up_amount": "追加金額",
+      "submit_text": "送る",
+      "portfolio_placeholder_text": "ポートフォリオを選択する",
+      "next": "次",
+      "current_fee_model_info": "ポートフォリオのプランによってはクレジットカード、銀行振り込み及び定期的な振り込みを選択して追加入金することができます。2020年10月以前に口座を開設されている場合、最新のプランで口座を開設していただく必要があります。お問い合わせがある方はお手数ですが口座担当者までご連絡ください。",
+      "recurring_payment_text": "定期的なお支払い",
+      "frequency_text": "頻度",
+      "start_date_text": "開始日",
+      "summary_text": "毎月{{date}}に{{amount}}がお支払いされます",
+      "success_text": "{{amount}}が口座に振り込まれました。何かご不明な点がありましたらお手数ですがご連絡ください",
+      "bankTransfer": {
+        "copied_text": "コピー済み",
+        "title": "銀行口座からの送金に関しての情報",
+        "disclaimer": "銀行口座から弊社に送金された場合口座に反映されるまで5日間かかる可能性があります",
+        "subTitle": "弊社の銀行詳細は下記となります。必ずお客様のお名前かCW口座番号を記入してください"
+      },
+      "recurring_payment_info_title": "注意",
+      "recurring_payment_info": "定期的にお支払いされる場合最初の引き落としは本日となり選択された頻度で定期的に今後引き落とされます"
+    }
+  },
+  "text": {
+    "topup": "振込",
+    "withdraw_funds": "引出"
+  },
+  "sideMenu": {
+    "contact_rm": "お問い合わせ"
+  },
+  "paymentDetails": {
+    "withdrawableForm": {
+      "noAccountNumber": "口座番号を入力してください",
+      "noAccountName": "口座名を入力してください",
+      "noSortCode": "銀行ソートコード（Sort Code）を入力してください",
+      "noIban": "IBANを入力して下さい",
+      "noBic": "BICを入力してください",
+
+      "exceedAccountNumberLimit": "口座番号　8桁",
+      "exceedSortCodeLimit": "ソートコード　6文字",
+      "exceedIbanLimit": "IBAN　34文字",
+      "exceedBicLimit": "BIC　８及び11文字",
+      "greaterThanMinRequired": "引き出す金額は{{minAmount}}以上である必要があります",
+      "exceedWalletBalance": "ご依頼されている引き出し金額は口座の残高を上回ってしまいます",
+      "title": "お支払い明細",
+      "subTitle": "口座上の名前と同じものを入力してください",
+      "accountName": "お名前",
+      "sortCode": "ソートコード（Sort Code）",
+      "accountNumber": "口座番号",
+      "iban": "IBAN",
+      "bic": "BIC",
+
+      "confirmButton": "確認"
+    }
+  },
+  "addressDetails": {
+    "deleteAddress": {
+      "modalTitle": "住所を削除する",
+      "modalDescription": "この住所を本当に削除しますか？",
+      "successNotificationMessage": "住所を削除しました",
+      "failureNotificationMessage": "住所を削除することできませんでした。もう一回試しますか？"
+    },
+    "billingAddress": {
+      "title": "請求書住所",
+      "add": "請求書住所を追加する",
+      "edit": "請求書住所を変更する"
+    },
+    "deliveryAddress": {
+      "title": "配送先住所",
+      "add": "配送先住所を追加する",
+      "edit": "配送先住所を変更する"
+    },
+    "createSuccess": "配送先住所を追加しました",
+    "createFailure": "配送先住所を追加することできませんでした",
+    "editSuccess": "配送先住所を変更しました",
+    "editFailure": "配送先住所を変更することできませんでした",
+    "addressModal": {
+      "add": {
+        "failure": {
+          "title": "配送先住所を変更することできませんでした"
+        },
+        "success": {
+          "message": "住所を追加しました"
+        }
+      },
+      "edit": {
+        "failure": {
+          "title": "住所を変更することできませんでした"
+        },
+        "success": {
+          "message": "住所尾を更新しました"
+        }
+      },
+      "failure": {
+        "message": "もう一回試してみてください"
+      },
+      "success": {
+        "title": "完了"
+      }
+    },
+    "addressForm": {
+      "addressLine1": "住所１",
+      "addressLine2": "住所２",
+      "addressLine3": "住所3",
+      "town": "都市",
+      "county": "県",
+      "state": "州",
+      "postcode": "郵便番号",
+      "zipcode": "ZIPコード",
+      "country": "国"
+    }
+  },
+  "titles": {
+    "overview": "概要",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "help-center": "ヘルプセンター"
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "titles": {
+    "detailsPage": "私のポートフォリオ",
+    "summaryPage": "ポートフォリオ",
+    "details_totals": {
+      "total-purchase-price": "合計購入金額",
+      "total-upfront-fees": "合計前払い料金",
+      "total-profit-loss": "総利益/損失",
+      "total-cost": "総コスト",
+      "current-holdings": "現在の保有数量",
+      "total-sold-value": "売却済み商品の総価格",
+      "total-current-value": "現在の総評価額",
+      "total-profit-loss-including-fees": "手数料込みの総利益/損失"
+    }
+  },
+  "cash-balances-text": "現金残高",
+  "forSale": "売り",
+  "portfolioSelectTitle": "ポートフォリオ",
+  "searchPlaceholderText": "ワイン銘柄検索",
+  "filterPortfolioPlaceHolderText": "ポートフォリオ選択",
+  "clearFilter": "フィルタークリア",
+  "viewPortfolioButton": "ポートフォリオ選択を表示",
+  "filterPortfolioText": "全ポートフォリオ",
+  "value": "ポートフォリオ評価",
+  "currentValue": "現在評価",
+  "totalInvested": "総合購入額",
+  "gainOrLoss": "損益",
+  "gainOrLossCalculation": "Current portfolio value - value of wine purchased + sum of all wine sold",
+  "activeOffers": "売り",
+  "bestForDrinking": "飲み頃",
+  "bottle": "本",
+  "bottles": "本",
+  "case": "ケース",
+  "cases": "ケース",
+  "performance": "ポートフォリオパフォーマンス",
+  "addWines": "ワイン追加",
+  "cultxPortfolio": "CultXポートフォリオ",
+  "noAssets": "ポートフォリオは空です",
+  "noWines": "外部ポートフォリオにワインはありません",
+  "noPortfolio": "ポートフォリオは空です",
+  "externalTotalValue": "外部総合評価",
+  "totalValue": "総合評価",
+  "sortBy": "並べ替え",
+  "current": "現在",
+  "sold": "売却済み",
+  "external": "外部",
+  "transfer": {
+    "request": "移管依頼",
+    "requested": "移管依頼済み",
+    "body": "このワインを移管しますか？",
+    "success": "移管依頼を承りました",
+    "failure": "移管依頼失敗しました。サポートSupport＠cultwines.comまでご連絡ください",
+    "backToPortfolio": "ポートフォリオに戻る"
+  },
+  "sideBarIcon": {
+    "portfolio": "ポートフォリオ",
+    "invest": "投資",
+    "cellar": "セラー",
+    "discover": "発見",
+    "account": "口座",
+    "termsAndConditions": "利用規約",
+    "privacyAndPolicy": "プライバシーポリシー",
+    "version": "ver {{version}}"
+  },
+
+  "summary": {
+    "allocation-table": {
+      "regions": "地域",
+      "currentallocation": "現在の割り当て",
+      "strategicallocation": "戦略的配分",
+      "tacticalallocation": "戦術的配分",
+      "strategicAllocationInfo": "Drawing on our macro views and fine wine market expertise, we use a top-down approach to define an optimal long-term allocation across regions and vintages",
+      "tacticalAllocationInfo": "We employ a bottom-up analysis to identify individual wines and producers best placed to deliver superior returns based on the current market outlook"
+    },
+
+    "texts": {
+      "all_time": "ずっと",
+      "investNow": "今すぐ投資する",
+      "portfolioBalance": "口座まとめ",
+      "viewDetails": "詳細表示",
+      "currentAllocation": "現時点の割合",
+      "currentHoldings": "現時点の保有物",
+      "currentInvested": "購入総額",
+      "netProceedsFromSales": "売却からの金額",
+      "netPosition": "ポジション",
+      "availableBalance": "残高",
+
+      "portfolioValuation": "ポートフォリオ評価",
+      "balancePending": "未精算残高",
+      "netProceedsfromSales": "売却からの金額",
+      "totalRefunds": "返済額",
+      "netContributions": "純貢献額",
+
+      "portfolioValuation_tooltip": "カルトワインインベストメントで保有しているお客様 のポートフォリオの現在の時価総額です。合計はお客様のポートフォリオの各銘柄の時価総額を合計したものです。",
+      "balancePending_tooltip": "カルトワインインベストメントの口座の現在の未決済残高の合計で、未決済の借方および貸方を含みます。この合計には売却による未清算の資金および手数料の未決済請求書が含まれます。",
+      "netProceedsfromSales_tooltip": "",
+      "totalRefunds_tooltip": "売却代金から外部の銀行口座送金された資金。カルトワインインベストメントのお客様の口座から外部へ送金される資金の総額です。",
+      "netContributions_tooltip": "在庫の購入、請求書の支払い、手数料、保管のためにカルトワインインベストメントのお客様の口座に振り込まれた新たな資金の合計です。この数字は、お客様の投資に直接関連する資金のみとなり別途発生する料金は含まれません。",
+      "netPosition_tooltip": "お客様のネットポジションは、カルトワインインベストメントへの投資におけるお客様の総利益または総損失です。この数字は、お客様の現在のポートフォリオ評価額、口座残高、未決済の引き落としと入金、新たに入力された資本、そして口座から振り込まれた払い戻しの合計を考慮したものです。この数字は、お客様の純投稿額から払い戻しを差し引いたものと、お客様の現在の保有額（お客様の現在のポートフォリオ評価額と未決済を含む残高の合計）との差となります。",
+      "availableBalance_tooltip": "カルトワインインベストメントのお客様の口座の現在利用可能な残高の合計です。この合計には、お客様の口座の清算済み資金が含まれます。",
+      "currentHoldings_graph_tooltip": "カルトワインインベストメントが保有するお客様のポートフォリオの現在の時価総額に、未決済の引き落としや入金を含むお客様の口座の現在の残高の合計を加えたものです。",
+      "netContributions_graph_tooltip": "購入のためにカルトワインインベストメントの口座に振り込まれた新資本の総額から、売却代金で得た口座から外部への資金移動の総額を差し引いたものです。"
+    }
+  },
+
+  "wineDetails": {
+    "title": "ワイン詳細",
+    "buttonText": "今すぐ購入"
+  },
+  "transferToExternalPortfolio": {
+    "title": "外部のポートフォリオにワインを追加する",
+    "submit": "ワインを追加する",
+    "success": "外部のポートフォリオにワインが移管されました",
+    "failure": "ワインの移管に問題がありました",
+    "purchasedPrice": "購入額",
+    "purchasedDate": "購入日時"
+  },
+  "failedToLoad": "ポートフォリオを表示することができまｓんでした。サポートSupport@cultwines.comまでご連絡ください",
+  "table": {
+    "headers": {
+      "wineName": "ワイン名",
+      "cashOffer": "現金オファー",
+      "drinkingWindow": "飲み頃",
+      "score": "評価スコア",
+      "units": "単位",
+      "unit": "単位",
+      "region": "地域",
+      "rotationNumber": "Rotation number",
+      "totalPurchasedPrice": "総合購入価格",
+      "totalMarketValuation": "総合評価",
+      "performance": "Performance (LTM)",
+      "myActiveOffers": "売り注文",
+      "id": "ID",
+      "location": "場所",
+      "purchasePrice": "購入価格",
+      "marketValuation": "評価価格",
+      "duty": "関税",
+      "entryDate": "入国日",
+      "wineTraceabilityHash": "Wine traceability (hash)",
+      "soldPricePerUnit": "単価",
+      "dealDate": "取引日",
+      "qty": "個数",
+      "status": "状況",
+      "soldDate": "売却日",
+      "qtySold": "売却個数",
+      "costPerUnit": "単価",
+      "totalCost": "総額",
+      "valuePerUnit": "個数評価",
+      "totalValue": "評価",
+      "changedPct": "%",
+      "profitAndLoss": "損益"
+    }
+  },
+  "partOfYourPortfolio": "ポートフォリオの一部",
+  "externalPortfolio": {
+    "title": "外部ポートフォリオ",
+    "currentLocation": "現時点の場所",
+    "purchaseDate": "購入日時",
+    "partOfYourPortfolio": "外部ポートフォリオの一部",
+    "deleteSuccess": "外部ポートフォリオ削除済み"
+  },
+  "requestTransferWineToExternalLocation": "ワインを外部のロケーションに移管",
+  "addYourAddress": "住所を追加",
+  "requestTransfer": "移管を依頼",
+  "transferToExternalLocation": {
+    "wineName": "ワイン名",
+    "units": "個数",
+    "purchasedPrice": "購入額",
+    "currentLocation": "現時点の場所",
+    "reviewSelection": "選択したものの見直し"
+  },
+  "transferFailedTitle": "移管失敗しました",
+  "backToPortfolio": "ポートフォリオに戻る",
+  "transferSuccessMessage": "ワインを移管する依頼を承りました。弊社の担当者から24時間以内にご連絡させていただきます",
+
+  "filters": {
+    "title": "フィルター",
+    "applyButtonText": "{{}}を表示",
+    "all": "全て",
+    "select": "選択",
+    "vintages": "ヴィンテージ",
+    "statuses": "状況",
+    "regions": "地域",
+    "forSale": "売り",
+    "notForSale": "売りではない",
+    "clearFilters": "フィルター削除",
+    "dealDate": "取引日",
+    "soldDate": "販売日",
+    "from": "から",
+    "to": "まで",
+    "datePlaceholderText": "日にちを選択する",
+    "profit": "益",
+    "loss": "損",
+    "wineNames": "ワイン名",
+    "processing": "対応中",
+    "sold": "売却済み",
+    "card-view": "カード表示",
+    "table-view": "表形式表示"
+  },
+  "welcome_banner": {
+    "title": "ようこそ",
+    "subTitle": "お客様のポートフォリオの本日の評価は…",
+    "description": "下記のチャートは£で計算されています。口座設定を変えることによって他の通過で表示することも可能です"
+  },
+  "annualisedReturn": {
+    "chartTitle": "ヒストリック リターン",
+    "table_heading_ytd": "YTD",
+    "table_heading_return": "戻り値"
+  }
+}

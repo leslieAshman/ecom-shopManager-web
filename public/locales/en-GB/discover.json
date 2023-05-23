@@ -1,0 +1,16 @@
+{
+  "title": "Discover",
+  "back": "Back",
+  "texts": {
+    "view-all": "View all",
+    "events-and-experiences": "Events and experiences",
+    "learning-hub": "Learning Hub",
+    "price": "Price",
+    "read-more": "Read more"
+  },
+  "slideout": {
+    "event-details-title": "Event details",
+    "learning-hub-title": "Learning hub",
+    "reserve-now": "Reserve now"
+  }
+}
