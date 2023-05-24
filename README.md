@@ -3,21 +3,9 @@
 ## Installation
 
 > Node version 16.17.0
-> `npm install`
-> `npm run prepare`
+> `npm install` > `npm run prepare`
 
 ## Manually deploying web-app
-
-1. Navigate to pipelines within DevOps
-2. Filter and select the appropriate pipeline (eg. portal-web-app-DEV-deploy for DEV see image below)
-   ![DeployToEnvironment.png](src/assets/images/env-deploy-1.png)
-
-3. Click Edit
-   ![DeployStep2.png](src/assets/images/env-deploy-2.png)
-
-4. Choose branch to deploy
-5. Run to execute deployment process
-   ![DeployStep3.png](src/assets/images/env-deploy-3.png)
 
 # Getting Started with Create React App
 
