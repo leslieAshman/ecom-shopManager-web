@@ -1,0 +1,113 @@
+parameters:
+  - name: token
+    type: string
+
+  # Azure Static web app allow deployment to a name environment where you can preview before deploying to your target environment.
+  # Potal-dev and portal-qa currently exist as named environment. Set the below enviroment parameter as 'dev' or qa to deploy to preview area
+  # Set environment parameter as '' to bypass preview and deploy to target.
+  - name: environment
+    type: string
+    default:
+
+  - name: appLocation
+    type: string
+    default: /
+
+stages:
+  - stage: Build
+    jobs:
+      - job: build
+        displayName: Build app
+        condition: and(succeeded(), or(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.Reason'], 'Manual')))
+        steps:
+          - template: preBuild.yml
+          - script: |
+              echo 'AUTH0_CLIENT: $(VAR_AUTH0_CLIENT)'
+              echo 'GRAPHQL_URL: $(VAR_GRAPHQL_URL)'
+              echo 'GRAPHQL_URL_INSECURE: $(VAR_GRAPHQL_URL_INSECURE)'
+              echo 'STRIPE_PUBLIC_KEY: $(VAR_GBP_STRIPE_PUBLIC_KEY)'
+              echo 'IMAGE_CDN_URL: $(VAR_IMAGE_CDN_URL)'
+              echo 'NOTIFICATION_POLL_INTERVAL: $(VAR_NOTIFICATION_POLL_INTERVAL)'
+              echo 'NAME: $npm_package_name'
+              echo 'APIM_KEY: $(VAR_APIM_KEY)'
+              echo 'VERSION: $npm_package_version'
+              echo 'LAUNCH_DARKLY_CLIENT_SIDE_ID: $(VAR_LAUNCH_DARKLY_CLIENT_SIDE_ID)'
+              echo 'PRIVACY_POLICY_URL: $(VAR_PRIVACY_POLICY_URL)'
+              echo 'TERMS_AND_CONDITION_URL: $(VAR_TERMS_AND_CONDITION_URL)'
+              echo 'HEAP_ACCOUNT_ID: $(VAR_HEAP_ACCOUNT_ID)'
+
+            displayName: Applying environmental variables
+
+          - task: Bash@3
+            displayName: 'npm run build'
+            inputs:
+              targetType: 'inline'
+              script: npm run build
+            env:
+              REACT_APP_AUTH0_CLIENT_ID: $(VAR_AUTH0_CLIENT)
+              REACT_APP_GRAPHQL_URL: $(VAR_GRAPHQL_URL)
+              REACT_APP_GRAPHQL_URL_INSECURE: $(VAR_GRAPHQL_URL_INSECURE)
+              REACT_APP_GBP_STRIPE_PUBLIC_KEY: $(VAR_GBP_STRIPE_PUBLIC_KEY)
+              REACT_APP_IMAGE_CDN_URL: $(VAR_IMAGE_CDN_URL)
+
+              REACT_APP_NOTIFICATION_POLL_INTERVAL: $(VAR_NOTIFICATION_POLL_INTERVAL)
+              REACT_APP_NAME: $npm_package_name
+              REACT_APP_VERSION: $npm_package_version
+              REACT_APP_APIM_KEY: $(VAR_APIM_KEY)
+              REACT_APP_LAUNCH_DARKLY_CLIENT_SIDE_ID: $(VAR_LAUNCH_DARKLY_CLIENT_SIDE_ID)
+              REACT_APP_PRIVACY_POLICY_URL: $(VAR_PRIVACY_POLICY_URL)
+              REACT_APP_TERMS_AND_CONDITION_URL: $(VAR_TERMS_AND_CONDITION_URL)
+              REACT_APP_HEAP_ACCOUNT_ID: $(VAR_HEAP_ACCOUNT_ID)
+
+          - task: CopyFiles@2
+            inputs:
+              sourceFolder: '$(Build.SourcesDirectory)/build'
+              contents: '**'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+          - task: CopyFiles@2
+            displayName: 'Copying staticwebapp.config.json to build folder'
+            inputs:
+              sourceFolder: '$(Build.SourcesDirectory)'
+              contents: 'staticwebapp.config.json'
+              targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publish artifacts
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+
+  - stage: deploy_to_environment
+    displayName: Deploy to ${{ parameters.environment }}
+    dependsOn: Build
+    jobs:
+      - deployment: deploy
+        displayName: Deploy and test
+        environment: portal-${{parameters.environment}}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: none
+                - checkout: none
+
+                - task: DownloadBuildArtifacts@1
+                  displayName: Download artifacts
+                  inputs:
+                    buildType: current
+                    downloadType: single
+                    artifactName: drop
+                    downloadPath: $(System.ArtifactsDirectory)
+
+                - task: AzureStaticWebApp@0
+                  displayName: Deploy to ${{ parameters.environment }} environment
+                  inputs:
+                    app_location: ${{ parameters.appLocation }}
+                    skip_app_build: true
+                    skip_api_build: true
+                    verbose: true
+                    azure_static_web_apps_api_token: ${{ parameters.token }}
+                    deployment_environment: ${{ parameters.environment }}
+                    workingDirectory: $(System.ArtifactsDirectory)/drop

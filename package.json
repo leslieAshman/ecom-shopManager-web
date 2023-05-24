@@ -1,0 +1,132 @@
+{
+  "name": "portal-web-app",
+  "version": "0.1.0",
+  "private": true,
+  "contributors": [
+    {
+      "name": "Leslie Ashman",
+      "email": "leslie@lashman.co.uk"
+    }
+  ],
+  "engines": {
+    "npm": "8.19.2",
+    "node": "16.17.0"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "__generated__",
+      "theme",
+      "__aToDelete",
+      "types",
+      "jestGlobalMocks.ts",
+      ".module.ts",
+      "<rootDir>/src/reportWebVitals.ts"
+    ]
+  },
+  "dependencies": {
+    "@apollo/client": "^3.6.9",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
+    "@faker-js/faker": "^7.5.0",
+    "@graphql-codegen/client-preset": "^3.0.1",
+    "@headlessui/react": "^1.7.2",
+    "@material-tailwind/react": "^1.2.5",
+    "@sentry/react": "^7.51.2",
+    "@stripe/react-stripe-js": "^1.15.0",
+    "@stripe/stripe-js": "^1.44.1",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.56",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "crypto-js": "^4.1.1",
+    "file-saver": "^2.0.5",
+    "formik": "^2.2.9",
+    "graphql": "^16.6.0",
+    "highcharts": "^10.2.0",
+    "highcharts-react-official": "^3.1.0",
+    "i18next": "^21.9.1",
+    "i18next-http-backend": "^1.4.1",
+    "launchdarkly-react-client-sdk": "^3.0.4",
+    "logrocket": "^3.0.1",
+    "moment": "^2.29.4",
+    "notistack": "^2.0.5",
+    "npm": "^8.19.2",
+    "react": "^18.2.0",
+    "react-datepicker": "^4.8.0",
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^3.1.4",
+    "react-i18next": "^11.18.5",
+    "react-number-format": "^4.9.3",
+    "react-router-dom": "^6.3.0",
+    "react-scripts": "5.0.1",
+    "react-tooltip": "^4.2.21",
+    "typescript": "^4.8.2",
+    "uuid": "^9.0.0",
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5",
+    "yup": "^0.32.11"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "test:ci": "CI=true react-scripts test --coverage",
+    "delete:generated": "find . -name __generated__ | xargs -I {} rm -rf {}",
+    "schema:compile": "npm run delete:generated && graphql-codegen",
+    "schema:watch": "graphql-codegen -w",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --max-warnings=0",
+    "lint:ci": "eslint 'src/**/*.{ts,tsx}' --max-warnings=45",
+    "format": "prettier --write 'src/**/*.{ts,tsx,json,css,scss}'",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx,json} !(__generated__/*)": [
+      "npm run lint:ci"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^3.3.1",
+    "@types/crypto-js": "^4.1.1",
+    "@types/file-saver": "^2.0.5",
+    "@types/graphql": "^14.5.0",
+    "@types/react-datepicker": "^4.4.2",
+    "@types/react-input-mask": "^3.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.35.1",
+    "@typescript-eslint/parser": "^5.35.1",
+    "autoprefixer": "^10.4.11",
+    "eslint": "^8.23.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.8.7",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
+    "tailwindcss": "^3.1.8"
+  }
+}

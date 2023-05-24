@@ -1,0 +1,74 @@
+{
+  "overrides": [
+    {
+      "files": ["*.cy.ts"],
+      "rules": {
+        "jest/valid-expect": "off"
+      }
+    }
+  ],
+  "extends": [
+    "react-app",
+    "react-app/jest",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["react", "@typescript-eslint", "eslint-plugin-jsx-a11y"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "project": "./tsconfig.json",
+    "createDefaultProgram": true
+  },
+  "rules": {
+    "jest/expect-expect": "off",
+    "linebreak-style": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "no-underscore-dangle": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "import/prefer-default-export": "off",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "default-case": "off",
+    "@typescript-eslint/switch-exhaustiveness-check": "warn",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.ts", "./*.ts"] }],
+    "no-restricted-imports": ["warn", {
+      "paths": [{
+        "name": "@apollo/client",
+        "importNames": ["gql"],
+        "message": "This is deprecated, please use `import { gql } from '__generated__';`"
+      }]
+    }]
+  },
+  "settings": {
+    "import/core-modules": [
+      "@apollo/client/react",
+      "@apollo/client/testing",
+      "@apollo/client/link/context",
+      "@apollo/client/link",
+      "@apollo/client/link/error"
+    ]
+  },
+  "ignorePatterns": ["src/__aToDelete/**", "**/__generated__"]
+}

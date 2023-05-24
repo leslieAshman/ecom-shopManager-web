@@ -1,0 +1,32 @@
+.react-datepicker {
+  font-family: 'GTFlexa';
+}
+
+.react-datepicker__header {
+  background: white;
+  border: 0;
+  padding: 0;
+}
+
+.react-datepicker__month-container {
+  width: 100%;
+}
+
+.react-datepicker__week {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.react-datepicker__current-month {
+  font-size: 16px;
+  padding-bottom: 16px;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background: inherit;
+  color: black;
+}
+
+.react-datepicker__header__dropdown {
+  padding-bottom: 10px;
+}

@@ -1,0 +1,16 @@
+{
+  "title": "発見",
+  "back": "戻る",
+  "texts": {
+    "view-all": "全て見る",
+    "events-and-experiences": "イベントと経験",
+    "learning-hub": "教育センター",
+    "price": "値段",
+    "read-more": "続きを読む"
+  },
+  "slideout": {
+    "event-details-title": "イベント情報",
+    "learning-hub-title": "教育センター",
+    "reserve-now": "すぐに予約する"
+  }
+}

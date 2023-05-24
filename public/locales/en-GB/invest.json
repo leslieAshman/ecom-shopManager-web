@@ -1,0 +1,11 @@
+{
+  "current_tab": "current offers",
+  "previous_tab": "previous offers",
+  "slideOutTitle": "Wine details",
+  "slideout": {
+    "title": "Invest Offer",
+    "invest_now_text": "Invest now",
+    "notify_when_available_text": "Notify me when available",
+    "price": "Price"
+  }
+}

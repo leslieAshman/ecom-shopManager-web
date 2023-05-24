@@ -1,0 +1,107 @@
+{
+  "overview": "まとめ",
+  "currentlyUnavailable": "現在使えません",
+  "invest": "投資",
+  "cellar": "倉庫",
+  "accounts": "口座",
+  "discover": "発見",
+  "notifications": "通知",
+  "portfolio": "ポートフォリオ",
+  "contact": "お問い合わせ",
+  "done": "完了",
+  "submit": "送信",
+  "success": "成功",
+  "cancel": "キャンセル",
+  "edit": "編集",
+  "ascending": "昇格",
+  "descending": "降格",
+  "showCompactList": "縮小したリストを一覧",
+  "exportToXls": "Export.xlsx",
+  "showMore": "もっと表示する",
+  "showLess": "表示するものを減らす",
+  "order": "順番",
+  "apply": "対応",
+  "ok": "OK",
+  "view": "表示",
+  "hide": "非表示",
+  "show": "表示",
+  "result": "結果",
+  "results": "結果",
+  "regions": {
+    "allregion": "すべての地域",
+    "allregions": "すべての地域",
+    "rhone": "ローヌ",
+    "usa": "米国",
+    "bordeaux": "ボルドー",
+    "burgundy": "ブルゴーニュ",
+    "italy": "イタリア",
+    "rest-of-world": "世界その他",
+    "champagne": "シャンパーニュ",
+    "other": "その他"
+  },
+
+  "table": {
+    "toolbar": {
+      "winesSelected": "選択したワイン"
+    },
+    "pagination": {
+      "resultsPerPage": "1ページの結果件数",
+      "firstPage": "最初のページ",
+      "lastPage": "最後のページ",
+      "previousPage": "前のページ",
+      "nextPage": "次のページ"
+    }
+  },
+
+  "thankYou": {
+    "title": "ありがとうございます",
+    "subTitle": "ご興味承知いたしました。口座の担当者からご連絡させていただきます",
+    "buttonText": "完了"
+  },
+
+  "noConnection": {
+    "title": "無接続",
+    "subTitle": "インターネットに接続してません",
+    "buttonText": "再試行"
+  },
+
+  "generalSuccess": {
+    "title": "成功",
+    "subTitle": "更新しました",
+    "buttonText": "閉じる"
+  },
+
+  "paymentSuccess": {
+    "title": "成功",
+    "subTitle": "押しはり完了しました",
+    "subTitle_recurring": "定期的のお支払いが設定されました",
+    "buttonText": "完了"
+  },
+
+  "somethingWentWrong": {
+    "title": "？？？",
+    "subTitle": "上手くいきませんでした",
+    "buttonText": "再試行"
+  },
+
+  "errorResult": {
+    "title": "エラー",
+    "subTitle": "現在ご依頼対応することができませんでした",
+    "buttonText": "再試行"
+  },
+
+  "noResult": {
+    "title": "何も見つかりませんでした",
+    "subTitle": ""
+  },
+
+  "noSearchResult": {
+    "title": "何も見つかりませんでした",
+    "subTitle": "検索されたものは見つかりませんでした"
+  },
+
+  "loading": {
+    "title": "対応中",
+    "subTitle": "対応中ですので少々お待ちください"
+  }
+}

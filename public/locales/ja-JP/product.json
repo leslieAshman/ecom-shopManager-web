@@ -1,0 +1,104 @@
+{
+  "dataValuations": {
+    "tableHeadings": {
+      "date": "日付",
+      "case": "ケース",
+      "reference_number": "参照番号",
+      "rotation_number": "ロテーション番号",
+      "status": "状況",
+      "location": "場所"
+    }
+  },
+
+  "wineDetails": {
+    "title": "ワイン詳細",
+    "forSale": "販売のため",
+    "unit": "ユニット",
+    "invest_more_button_text": "買い依頼",
+    "sell_holdings_button_text": "売り依頼",
+    "units_owned": "所有個数",
+    "value_per_unit": "各個数の評価",
+    "total_value": "総合評価",
+    "include_fees": "費用含む",
+    "data_and_valuations": "日付と評価",
+    "live_ex-performance_chart_description": "Liv-Exのデータは12本ケースを基準としGBPで表示されています",
+    "live_ex_chart_title": "Liv-Exのデータは12本ケースを基準としGBPで表示されていますパフォーマンスチャート",
+
+    "arrangeDelivery": {
+      "buttonText": "配送依頼",
+      "title": "ワインの配送を依頼する",
+      "subTitle": "自宅まで配送する。利用規約をご確認ください",
+      "success_send-request": "私たちは、あなたの「もっと投資する」リクエストを送信しました。担当者から直接ご連絡いたします",
+      "fail_send-request": "申し訳ございませんが、ご要望をお伺いすることができません。お手数ですが、弊社までご連絡ください。",
+      "unit_count_above_max": "現在ご依頼されている個数が保有されている個数を超えています。訂正をお願いします",
+      "unit_count_below_min": "Number of units must be greater than 1",
+
+      "unit_for_delivery": "配送する個数/ケース",
+      "units_required_text": "配送する個数",
+      "region": "地域",
+      "city": "都市",
+      "address_1": "住所１",
+      "address_2": "住所２",
+      "address_3": "住所３",
+      "state": "県",
+      "postcode": "郵便番号",
+      "country": "国",
+      "submit_request": "依頼を送信する",
+      "saved_address_text": "この住所を今後のため保存する",
+      "select_delivery_address_text": "配達先を選択する",
+      "add_new_address_text": "新規の配達住所を追加する"
+    },
+
+    "investMore": {
+      "current-market-price": "現在の市場価格",
+      "custom-price-bid-request": "カスタム価格の入札リクエスト",
+      "title": "追加投資する",
+      "custom_price_text": "特注価格",
+      "pricing_choice": "価格選択",
+      "submit_request": "依頼発注",
+      "number_of_units_text": "個数",
+      "total": "合計",
+      "please_select_text": "選択してください",
+      "price_required": "特注価格が必要となります",
+      "price_below_min": "{{}}以上の数値を入力してください",
+      "success_send-request": "私たちは、あなたのリクエストを送信しました。担当者から直接ご連絡いたします",
+      "fail_send-request": "申し訳ございませんが、ご要望をお伺いすることができません。お手数ですが、弊社までご連絡ください。"
+    },
+
+    "sellHolding": {
+      "title": "所有物を売る",
+      "unit_count_above_max": "個数は保有されている個数を超えることできません",
+      "unit_count_below_min": "1以上の数値を入力してください",
+      "fail_send-request": "申し訳ございませんが、ご要望をお伺いすることができません。お手数ですが、弊社までご連絡ください。",
+      "price_required": "最低売却価格が必要です",
+      "price_below_min": "{{}}以上の数値を入力してください",
+      "price_exceed_constraint": "ご入力された数値は最高割引の5%を上回ってます",
+      "submit_request": "依頼発注",
+      "number_of_units_text": "個数",
+      "reserve_price_text": "最低売却価格",
+      "reason_for_sale_text": "売却される理由",
+      "total_market_value_text": "総合時価",
+      "total_reserve_price_text": "総合最低売却価格",
+      "reserve_price_info": "最低売却価格を評価価格より5%しわ回る価格に設定することをお勧めします",
+      "contactUs_info": "何か不明な点がありましたらご連絡ください",
+      "saleReasons": {
+        "forRefund": "ポートフォリオから調達",
+        "newPurchase": "新規購入のため資金調達",
+        "reBalance": "パフォーマンス不調のため調節（リバランス）",
+        "lockInProfits": "利食い",
+        "please_select": "選択してください"
+      }
+    },
+
+    "valuations": {
+      "dealDate": "取引日:",
+      "total-purchase-price": "合計購入金額",
+      "total-upfront-fees": "合計前払い料金",
+      "market-price": "市場価格",
+      "profit-loss": "利益/損失",
+      "per-unit": "1個あたり",
+      "total-cost": "総コスト",
+      "profit-loss-including-fees": "利益/損失(手数料込)"
+    }
+  }
+}
