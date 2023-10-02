@@ -12,7 +12,7 @@ import { getRange, pickRandom, randomDate, randomNumberBetween } from '../../../
 import { PORTFOLIO_CURRENT_HOLDINGS } from '../components/Details/graphql';
 import { GET_EXTERNAL_STOCKS } from '../components/Details/graphql/getExternalStocks';
 import { GET_SOLD_STOCKS } from '../components/Details/graphql/getSoldStocks';
-import { PORTFOLIO_BALANCES } from '../components/Summary/graphql/getPortfolioBalances';
+import { GET_PORTFOLIOS } from '../graphql/getPortfolios';
 import { PORTFOLIO_PERFORMANCE_OVER_TIME } from '../components/Summary/graphql/portfolioPerformanceOverTime';
 import { PORTFOLIO_CASH_BALANCE } from '../graphql/portfolioCashBalance';
 
@@ -256,7 +256,7 @@ export const portalCashBalanceResponse: MockedResponse<GetCashBalanceQuery> = {
 
 export const portfolioBalancesResponse: MockedResponse<GetPortfolioBalancesQuery> = {
   request: {
-    query: PORTFOLIO_BALANCES,
+    query: GET_PORTFOLIOS,
   },
   result: {
     data: {

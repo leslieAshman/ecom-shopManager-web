@@ -1,3 +1,5 @@
+import { BasePortfolioType } from 'views/Portfolio/types';
+
 export enum NavigationPath {
   LOGIN = '/login',
   REGISTRATION = '/registration',
@@ -12,6 +14,7 @@ export enum NavigationPath {
   PAYMENT_CONFIRMATION = '/payment-confirmation',
   NOTIFICATIONS = '/notifications',
   CONTACT_US = '/contact_us',
+  CONTROLS = '/controls',
 }
 
 export interface AddressType {
@@ -112,3 +115,16 @@ export enum Alignment {
 export enum RefreshRegion {
   HEADER = 'header',
 }
+
+export interface ShopOnBoardingModel {
+  shopDetails: BasePortfolioType;
+  agreement: string;
+}
+
+export enum UserActionEventType {
+  CANCEL = 'cancel',
+  BACK = 'back',
+  SAVE = 'save',
+}
+
+////////////////////////

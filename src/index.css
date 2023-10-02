@@ -10,11 +10,11 @@
 }
 
 .btn-outline {
-  @apply text-black border border-vine btn text-14 font-normal rounded-full w-full;
+  @apply text-black border border-vine btn text-14 font-normal rounded-full;
 }
 
 .btn-accent {
-  @apply btn text-14 font-normal bg-orange rounded-full mt-8  text-black w-full hover:bg-orangeHover;
+  @apply btn text-14 font-normal bg-orange rounded-full  text-black  hover:bg-orangeHover;
 }
 
 .btn-disabled {

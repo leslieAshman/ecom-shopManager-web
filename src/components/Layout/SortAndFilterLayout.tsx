@@ -15,6 +15,7 @@ import PDFilters, { DDFilterItem, Filters, FilterTypes } from '../../components/
 import { SortByOption, SortByType } from '../../views/Portfolio/types';
 import { onExportToXlsx } from '../../helpers';
 import moment from 'moment';
+import Switcher from 'components/Switcher';
 
 export interface SortAndFilterLayoutContextType {
   config: SlideoutConfigType;
@@ -455,22 +456,13 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
                               <span className="text-base">{displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}</span>
                             </div>
 
-                            <Switch
+                            <Switcher
                               checked={isCompact}
                               onChange={(val: boolean) => {
                                 setIsCompact(val);
                               }}
-                              className={`${
-                                isCompact ? 'bg-blue-600' : 'bg-gray-200'
-                              } relative inline-flex h-6 w-11 items-center rounded-full`}
-                            >
-                              <span className="sr-only">{displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}</span>
-                              <span
-                                className={`${
-                                  isCompact ? 'translate-x-6' : 'translate-x-1'
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                              />
-                            </Switch>
+                              text={displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}
+                            />
                           </div>
                         )}
                       </div>

@@ -148,10 +148,12 @@ const LoginForm: FC<LoginFormProps> = ({ emailAddress }) => {
   const { onLogin } = useAuth({
     errorHandler,
     onError: (e: Error) => {
+      alert('ERROR');
       setIsLoggingIn(false);
       setError(e);
       logError(e);
     },
+
     onSuccess: onSuccessLogin,
   });
   const onClear = (key: string) => {

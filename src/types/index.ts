@@ -13,3 +13,13 @@ export type IsFormValidFnType = () => boolean;
 export type ValidationFuncType = () => any;
 
 export type EmptyObject = Record<string, unknown>;
+
+export enum EventTypes {
+  CANCEL = 'cancel',
+  SAVE = 'save',
+  CLOSE = 'close',
+}
+
+export interface EventArgs {
+  onCTA: (type: EventTypes, data?: unknown) => void;
+}

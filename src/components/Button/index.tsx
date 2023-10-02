@@ -1,7 +1,8 @@
 import { FC, ReactNode } from 'react';
+import { classNames } from 'utils';
 
 interface ButtonProp {
-  type?: 'button' | 'submit' | 'reset';
+  type?: 'button' | 'submit' | 'reset' | 'badge';
   children: ReactNode;
   className?: string;
   isDisable?: boolean;
@@ -22,12 +23,53 @@ const Button: FC<ButtonProp> = ({
 }) => {
   const isLinkButton = isLink !== undefined && isLink;
 
+  if (type === 'badge') {
+    return (
+      <span
+        id="badge-dismiss-default"
+        className={classNames(
+          'inline-flex items-center px-2 py-1 mr-2 text-sm font-medium  border border-1 rounded',
+          isDisable ? 'btn-disabled' : '',
+          className || '',
+        )}
+      >
+        {children}
+        <button
+          type="button"
+          onClick={() => {
+            if (onClick) onClick();
+          }}
+          className="inline-flex items-center p-1 ml-2 cursor-pointer text-sm text-red hover:bg-gray-300 bg-transparent rounded-sm "
+          data-dismiss-target="#badge-dismiss-default"
+          aria-label="Remove"
+        >
+          <svg
+            className="w-2 h-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+          </svg>
+          <span className="sr-only">Delete</span>
+        </button>
+      </span>
+    );
+  }
+
   return (
     <button
       onClick={() => {
         if (onClick) onClick();
       }}
-      className={`${isLinkButton ? 'btn-link' : 'btn'} ${className || ''}`.trim()}
+      className={`${isLinkButton ? 'btn-link' : 'btn'} ${className || ''} ${isDisable ? 'btn-disabled' : ''}`.trim()}
       disabled={isDisable || false}
       type={type}
       {...(props || {})}

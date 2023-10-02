@@ -200,5 +200,119 @@
     "title": "Welcome",
     "subTitle": "Your Cult Wine Investment portfolio value today is",
     "description": "The historical performance chart is calculated in GBP, which is the base currency for the fine wine market. You can view your portfolio details and cash balance in the currency of your choice by updating the preferences in the account section under settings. "
+  },
+  "shopDetails": {
+    "name": "Name",
+    "address": "Address",
+    "town": "Town/Borough/County",
+    "city": "City/State",
+    "postcode": "Postcode/ZipCode",
+    "country": "Country"
+  },
+
+  "asset": {
+    "information": {
+      "section": {
+        "title": "INFORMATION",
+        "subTitle": ""
+      },
+      "name": {
+        "title": "Name",
+        "placeholder": "",
+        "subTitle": "Include searchable keywords"
+      },
+      "description": {
+        "title": "Description",
+        "placeholder": "Write product description here",
+        "subTitle": ""
+      },
+      "category": {
+        "title": "Category",
+        "placeholder": "",
+        "subTitle": ""
+      },
+      "type": {
+        "title": "Type",
+        "placeholder": "",
+        "subTitle": ""
+      }
+    },
+    "pricing": {
+      "section": {
+        "title": "PRICING",
+        "subTitle": "Factor in all costs. How much will buyers pay? - including VAT and delivery"
+      },
+      "price": {
+        "title": "Price",
+        "placeholder": "",
+        "subTitle": "Factor in all costs. How much will buyers pay? - including VAT and delivery"
+      },
+      "isOnPromotion": {
+        "title": "Is on promotion?",
+        "placeholder": "",
+        "subTitle": ""
+      },
+      "promotionPrice": {
+        "title": "Promotion price",
+        "placeholder": "",
+        "subTitle": ""
+      },
+      "promotionStartDate": {
+        "title": "Promotion start date",
+        "placeholder": "",
+        "subTitle": ""
+      },
+      "promotionEndDate": {
+        "title": "Promotion end date",
+        "placeholder": "",
+        "subTitle": ""
+      },
+      "buyInfo": {
+        "title": "Buy info",
+        "placeholder": "",
+        "subTitle": "Add information about price"
+      }
+    },
+    "stocking": {
+      "section": {
+        "title": "STOCKING",
+        "subTitle": "Quantity greater than one renew automatically until 0. A listing fee of $0.20 USD is chargeable each time"
+      },
+      "units": {
+        "title": "Units",
+        "placeholder": "",
+        "subTitle": ""
+      }
+    },
+    "variations": {
+      "section": {
+        "title": "VARIATIONS",
+        "subTitle": "Add variation to your product. Buyers will have the option to choose from these during check out."
+      },
+      "varOpt": "set default",
+      "optionsRequired": " options required"
+    },
+    "policies": {
+      "section": {
+        "title": "POLICIES",
+        "subTitle": ""
+      },
+      "policy": "Applicable policies",
+      "morePolicy": "Add one or more policies to this listing"
+    },
+    "hashTags": {
+      "section": {
+        "title": "HASHTAGS",
+        "subTitle": "Keywords to find your listings during searches."
+      },
+      "hashTags": ""
+    },
+    "additionalInfo": {
+      "section": {
+        "title": "ADDITIONAL INFORMATION",
+        "subTitle": "Provide additional information to buyers"
+      },
+      "infoSections": ""
+    }
   }
 }

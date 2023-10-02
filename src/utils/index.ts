@@ -2,6 +2,7 @@
 import moment from 'moment';
 import { TFunction } from 'react-i18next';
 import { ObjectType } from '../types/commonTypes';
+import * as uuid from 'uuid';
 
 export const roundNumber2 = (num: number, scale = 2) => {
   if (Math.round(num) !== num) {
@@ -406,3 +407,15 @@ export const diffKeys = (obj1: ObjectType, obj2: ObjectType) => {
   // Return the object of differences
   return diffs;
 };
+
+// export const getUUID = () => {
+//   let d = new Date().getTime();
+//   const uuid = 'axxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+//     const r = (d + Math.random() * 16) % 16 | 0;
+//     d = Math.floor(d / 16);
+//     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+//   });
+//   return uuid;
+// };
+
+export const getUUID = () => uuid.v4().toString();

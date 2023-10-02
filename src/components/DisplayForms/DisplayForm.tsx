@@ -1,9 +1,33 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DisplayFieldType, DisplayField, DisplaySection, ModelValidationSchemaType } from './';
+import { DisplayFieldType, DisplayField, DisplaySection, ModelValidationSchemaType, OverridableFieldType } from './';
 import CustomInput from '../CustomInput';
 import { classNames } from '../../utils';
+import { getFieldAttributes } from 'helpers';
+
+export const getFields = (
+  fieldsIn: OverridableFieldType[],
+  onFieldUpdate?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field?: DisplayField) => void,
+): DisplayField[] => {
+  return [...fieldsIn].map((field) => {
+    const config = {
+      ...getFieldAttributes(field.modelKey as string, field.modelKey as string, field?.label?.text ?? ''),
+      sectionId: field.sectionId ?? '',
+      containerClassName: 'mt-10 mr-5',
+      inputProps: {
+        inputClassName: classNames('bg-transparent '),
+        showClearButton: true,
+        inputContainerClassName: '!border-gray-700',
+      },
+      onChange: onFieldUpdate,
+    };
+    return {
+      ...config,
+      ...(field?.overrides?.(config) ?? {}),
+    };
+  });
+};
 
 export enum DisplayFormTestIds {
   TITLE = 'title',
@@ -87,6 +111,7 @@ const DisplayForm = <T extends { modelType: string | undefined }>({
                         type = DisplayFieldType.TEXT,
                         onClear = () => null,
                       } = field;
+                      field.sectionId = section.id ?? '';
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       const placeholder = t((field.translationKey || '') as any) || field.placeholder;
                       const fieldReference = field.id;
@@ -113,7 +138,7 @@ const DisplayForm = <T extends { modelType: string | undefined }>({
                               htmlFor={field.id}
                               className={`text-gray-700 text-sm ${field.label?.className || ''}`}
                             >
-                              {field.label.text}
+                              {`${field.label.text}${field.isRequired ? '*' : ''}`}
                             </label>
                           )}
 
@@ -129,6 +154,7 @@ const DisplayForm = <T extends { modelType: string | undefined }>({
                               onBlur={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) =>
                                 handleBlur(e, field)
                               }
+                              helperTextClassName={field.helperTextClassName ?? ''}
                               helperText={field.helperText}
                               addOnEnd={() => field.customTemplate && field.customTemplate(field)}
                             />

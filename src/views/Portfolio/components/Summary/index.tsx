@@ -16,12 +16,21 @@ import {
   usePortfolioPerformanceOverTime,
   UsePortfolioPerformanceOverTimeResponse,
 } from './hooks/usePortfolioPerformanceOverTime';
-import { ViewKeys } from '../../types';
+import { PortfolioType, ViewKeys } from '../../types';
 import Allocation from '../Allocation';
 import ToolTip from '../../../../components/Tooltip';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import AnnualisedReturn from '../AnnualisedReturn';
 import { AppContext } from '../../../../context/ContextProvider';
+
+const ddlConfig = {
+  itemsWrapperClassName: 'min-w-[300px] overflow-x-hidden',
+  itemWrapperStyle: { width: '100%' },
+  containerClassName: 'w-full flex-1',
+  itemsContainerClassName: 'h-[300px] overflow-y-auto w-full',
+  itemClassName: 'text-base flex flex-1',
+  className: 'flex-1 text-sm sm:text-14 text-black  whitespace-nowrap p-0 justify-start border-b border-b-gray-400',
+};
 
 const seriesColors = ['#28515C', '#FF906D'];
 enum DisplayTextKeysEnum {
@@ -46,7 +55,7 @@ const DisplayTextKeys = {
 
 interface SummaryProps {
   onViewChange: (viewKey: ViewKeys, selectedOptionId: string) => void;
-  portfolioBalances: PortfolioBalance[];
+  portfolios: PortfolioType[];
   currentPortfolio: string;
   loadingBalances: boolean;
 }
@@ -71,7 +80,7 @@ const filterPeriod = (
   return filteredData;
 };
 
-const Summary: FC<SummaryProps> = ({ onViewChange, portfolioBalances, currentPortfolio, loadingBalances }) => {
+const Summary: FC<SummaryProps> = ({ onViewChange, portfolios, currentPortfolio, loadingBalances }) => {
   const { t } = useTranslation();
   const { deployAnnualizedReturnFeature } = useFlags();
   const {
@@ -88,7 +97,11 @@ const Summary: FC<SummaryProps> = ({ onViewChange, portfolioBalances, currentPor
   const { regionPerformances, allocations, loading: loadingAllocations } = usePortfolioCurrentAllocation();
   const [holdlingVsInvestSeries, setHoldingsVsInvestedSeries] = useState<HoldingVsInvestedSeries[]>([]);
 
-  const portfolioDropdownOptions = useMemo(() => getPortfolioDropdownOptions(portfolioBalances), [portfolioBalances]);
+  const portfolioDropdownOptions = useMemo(() => {
+    setSelectedPortfolioBalance(portfolios[0]?.shopId);
+    return getPortfolioDropdownOptions(portfolios);
+  }, [portfolios]);
+
   const chartPeriods = useMemo(
     () => [
       {
@@ -139,8 +152,8 @@ const Summary: FC<SummaryProps> = ({ onViewChange, portfolioBalances, currentPor
     setSelectedPortfolioBalance(item.value);
   };
   const selectedPortfolioInfo = useMemo(
-    () => getPortfolioInfo(portfolioBalances, displayText, selectedPortfolioBalance, seriesColors),
-    [portfolioBalances, selectedPortfolioBalance, displayText],
+    () => getPortfolioInfo(portfolios, displayText, selectedPortfolioBalance, seriesColors),
+    [portfolios, selectedPortfolioBalance, displayText],
   );
 
   useEffect(() => {
@@ -166,18 +179,10 @@ const Summary: FC<SummaryProps> = ({ onViewChange, portfolioBalances, currentPor
     ]);
   }, [selectedChartPeriod, portfolioPerformanceOverTime, displayText, language]);
 
+  console.log('PortfolioDropdownOptions', portfolioDropdownOptions);
   return (
     <div className=" w-full h-full px-5">
-      <div className="flex items-center relative justify-between h-[80px] ">
-        <Dropdown
-          placeholder={displayText[DisplayTextKeys.PORTFOLIO_FILTER_PLACEHOLDER_TEXT]}
-          value={selectedPortfolioBalance}
-          valueTemplate={<div>{selectedPortfolioInfo.selectedText}</div>}
-          onItemSelect={onPortfolioChange}
-          items={portfolioDropdownOptions}
-          className="flex-1"
-          itemClassName="w-[300px]"
-        />
+      <div className="flex items-center relative justify-end h-[80px] ">
         <Button
           className={`btn text-14 font-normal bg-orange rounded-full   text-black`}
           onClick={() => onViewPortfolio(ViewKeys.DETIALS, selectedPortfolioBalance)}

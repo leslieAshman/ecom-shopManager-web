@@ -4,12 +4,14 @@ import { DisplayField } from '../components/DisplayForms';
 import { DropdownItem } from '../components/Dropdown';
 import { PricingType } from '../components/ProductTemplates/types';
 import { TableColumnType } from '../components/Table';
-import { AddressType, PortfolioBalance, PortfolioBalanceInfo, Size } from '../types/DomainTypes';
+import { AddressType, PortfolioBalanceInfo, Size } from '../types/DomainTypes';
 import { Product, Region } from '../types/productType';
-import { capitalizeFirstLetter, formatter, roundNumber, toInternalId } from '../utils';
+import { capitalizeFirstLetter, formatter, getUUID, roundNumber, toInternalId } from '../utils';
 import { PasswordChangeValidationKeys } from '../views/Accounts/types';
 import defaultWineImage from '../assets/images/defaultWineImage.png';
 import { ObjectType } from '../types/commonTypes';
+import moment from 'moment';
+import { BasePortfolioType, PortfolioType } from 'views/Portfolio/types';
 
 export const getRegions = (t?: TFunction): Region[] => [
   {
@@ -116,52 +118,63 @@ export const addressToString = (addressIn: AddressType): string => {
     .join(', ');
 };
 
-export const getPortfolioDropdownOptions = (portfolioBalances: PortfolioBalance[]) => {
-  return portfolioBalances.map((balance) => {
-    const { portfolioId, portfolioName, currentHoldings } = balance;
-    return {
-      id: portfolioId,
-      value: portfolioId,
-      content: (
-        <div className="flex justify-between text-base">
-          <span>{portfolioName}</span>
-          <span>{`${formatter.format(currentHoldings)}`}</span>
-        </div>
-      ),
-    };
-  });
+export const getPortfolioDropdownOptions = (portfolios: PortfolioType[]) => {
+  return [
+    // {
+    //   id: 'all',
+    //   value: 'all',
+    //   content: (
+    //     <div className="flex justify-between text-base">
+    //       <span>ALDL</span>
+    //     </div>
+    //   ),
+    // },
+    ...portfolios.map((portfolio) => {
+      const { shopId, name } = portfolio;
+      return {
+        id: shopId,
+        value: name,
+        content: (
+          <div className="flex justify-between text-base">
+            <span>{name}</span>
+            {/* <span>{`${formatter.format(currentHoldings)}`}</span> */}
+          </div>
+        ),
+      };
+    }),
+  ];
 };
 
 export const getPortfolioInfo = (
-  portfolioBalances: PortfolioBalance[],
+  portfolios: PortfolioType[],
   displayText: Record<string, string>,
-  selectedPortfolioBalance: string,
+  selectedPortfoloId: string,
   colors?: string[],
 ) => {
-  if (!portfolioBalances || portfolioBalances.length === 0)
+  if (!portfolios || portfolios.length === 0)
     return {
       selectedText: '',
       info: [],
     };
 
-  const balance = portfolioBalances.find((x) => x.portfolioId === selectedPortfolioBalance);
+  const portfolio = portfolios.find((x) => x.shopId === selectedPortfoloId);
 
-  const {
-    portfolioName,
-    currentHoldings,
-    balancePending,
-    totalRefunds,
-    netContributions,
-    netPosition,
-    balance: availableBalance,
-    netPositionPct,
-  } = balance!;
+  const { name, shopId } = portfolio || {};
+  const { currentHoldings, availableBalance, balancePending, netContributions, totalRefunds } = {
+    currentHoldings: 0,
+    availableBalance: 0,
+    balancePending: 0,
+    netContributions: 0,
+    totalRefunds: 0,
+  };
+  const netPosition = currentHoldings + netContributions + totalRefunds;
+  const netPositionPct = netPosition / currentHoldings;
 
   const currentHoldingsSeriesColor = (colors || [])[0];
   const netContributionSeriesColor = (colors || [])[1];
 
   return {
-    selectedText: portfolioName,
+    selectedText: name,
     info: [
       {
         color: currentHoldingsSeriesColor,
@@ -240,6 +253,62 @@ export const getBlankProduct = (): Product => ({
   profitAndLoss: 0,
   profitAndLossHistory: [],
 });
+
+export const getBasePortfolioModel = (): PortfolioType =>
+  ({
+    _id: getUUID(),
+    shopId: '',
+    name: '',
+    email: '',
+    owner: '',
+    isOnline: true,
+    address: '',
+    area: '',
+    city: '',
+    country: '',
+    postcode: '',
+    phoneNo: '',
+    isAgreementSigned: true,
+    hashTags: [],
+    createdDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+  } as PortfolioType);
+
+export const getBlankPortfolioModel = () => {
+  return {
+    _id: getUUID(),
+    shopId: '',
+    logo: { name: 'test', image: '' },
+    logoSmall: '',
+    name: '',
+    address: '',
+    area: '',
+    postcode: '',
+    city: '',
+    country: '',
+    email: '',
+    phoneNo: '',
+    createdBy: '',
+    createdDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+    isAgreementSigned: false,
+    owner: '',
+    ownerPic: '',
+    website: '',
+    hashTags: [],
+    isOnline: false,
+    likes: 0,
+    reviews: [],
+    gallery: [],
+    serviceBin: [],
+    currency: {
+      symbol: '',
+      short: '',
+      long: '',
+    },
+
+    bookings: [],
+    employees: [],
+  } as BasePortfolioType;
+};
 
 export const getFieldAttributes = (id: string, modelKey: string, label = '') => ({
   id,

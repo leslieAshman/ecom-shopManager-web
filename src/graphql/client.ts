@@ -211,7 +211,8 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
 const authLink = setContext((_, { headers }) => {
   const accessToken = getAccessToken();
   const userToken = getUserToken();
-  if (!accessToken || !userToken) {
+  console.log('accessToken', accessToken, userToken);
+  if (!userToken) {
     return {
       headers: {
         ...headers,
@@ -228,7 +229,8 @@ const authLink = setContext((_, { headers }) => {
       ...headers,
       'x-isapp': false,
       'x-day': moment().format('YYYY-MM-DD HH:mm:ss'),
-      // authorization: `Bearer ${accessToken}`,
+      authorization: `Bearer ${userToken}`,
+      'x-access-token': `Bearer ${userToken}`,
       // CdsUserJwt: userToken,
       // 'Ocp-Apim-Subscription-Key': process.env.REACT_APP_APIM_KEY,
     },
@@ -253,6 +255,7 @@ export const defaultOptions: DefaultOptions = {
 // Insecure GraphQL endpoint does not need JWT and for user to be logged in to call it
 const insecureGraphQL = new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_URL_INSECURE });
 const secureGraphQL = new HttpLink({ uri: process.env.REACT_APP_GRAPHQL_URL });
+console.log('secureGraphQL', process.env.REACT_APP_GRAPHQL_URL, process.env.REACT_APP_GRAPHQL_URL_INSECURE);
 const graphqlEndpoints = ApolloLink.split(
   (operation) => operation.getContext().serviceName === 'insecure',
   insecureGraphQL,

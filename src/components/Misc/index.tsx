@@ -33,7 +33,10 @@ export const MiscModal: FC<MiscModalProps> = ({ children }) => {
         </div>
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
         <div
-          className="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          className="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl 
+          transform transition-all sm:my-8 w-[80%]
+          sm:align-middle 
+           "
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"

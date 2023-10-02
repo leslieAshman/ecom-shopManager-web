@@ -15,3 +15,14 @@ export interface CurrencyFormater {
 }
 
 export type ObjectType = Record<string, unknown>;
+
+export interface BaseResponse<T> {
+  isSuccess: boolean;
+  message?: string;
+  messageType?: string;
+  result?: T;
+}
+
+export interface GetResponse<T> {
+  [Key: string]: BaseResponse<T>;
+}

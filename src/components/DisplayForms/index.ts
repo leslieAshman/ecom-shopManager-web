@@ -6,6 +6,7 @@ export interface DisplayField {
   id: string;
   name: string;
   type?: DisplayFieldType;
+  sectionId?: string;
   thousandSeparate?: boolean;
   isAutoFocus?: boolean;
   modelKey?: string;
@@ -22,6 +23,8 @@ export interface DisplayField {
   onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>, field?: DisplayField) => void;
   onError?: (value: string, fieldId: string) => void;
   helperText?: string | undefined;
+  helperTextClassName?: string;
+  isRequired?: boolean;
   inputProps?: Record<string, unknown>;
   label?: {
     text: string;
@@ -46,6 +49,7 @@ export type ModelValidationSchemaType = Record<
 >;
 
 export interface DisplaySection {
+  id?: string;
   className?: string;
   fields: DisplayField[];
   name?: string;
@@ -73,3 +77,10 @@ export const withdrawFundsModel = yup.object({
 });
 
 export type WithdrawFundsModelType = yup.InferType<typeof withdrawFundsModel>;
+
+export interface OverridableFieldType {
+  modelKey: string;
+  label?: { text: string };
+  sectionId?: string;
+  overrides?: (configIn: Partial<DisplayField>) => Partial<DisplayField>;
+}

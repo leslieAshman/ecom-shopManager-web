@@ -1,4 +1,14 @@
 {
+  "save": "Save",
+  "cancel": "Cancel",
+  "apply": "Apply",
+  "ok": "OK",
+  "back": "Back",
+  "next": "Next",
+  "done": "done",
+  "submit": "Submit",
+  "edit": "Edit",
+
   "overview": "Overview",
   "currentlyUnavailable": "Currently unavailable",
   "invest": "Invest",
@@ -8,11 +18,9 @@
   "notifications": "Notifications",
   "portfolio": "Portfolio",
   "contact": "Contact us",
-  "done": "done",
-  "submit": "Submit",
+
   "success": "Success!",
-  "cancel": "Cancel",
-  "edit": "Edit",
+
   "ascending": "Ascending",
   "descending": "Descending",
   "showCompactList": "Show compact list",
@@ -20,8 +28,7 @@
   "showMore": "Show more",
   "showLess": "Show less",
   "order": "Order",
-  "apply": "Apply",
-  "ok": "OK",
+
   "view": "View",
   "hide": "Hide",
   "show": "Show",

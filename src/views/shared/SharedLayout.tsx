@@ -8,7 +8,7 @@ import { AppContext } from '../../context/ContextProvider';
 import { isLoggedInVar } from '../../graphql/cache';
 import { signOut } from '../../services/auth';
 import { AppEventTypes } from '../../types/AppType';
-import { CurrencyFormater } from '../../types/commonTypes';
+import { BaseResponse, CurrencyFormater, GetResponse } from '../../types/commonTypes';
 import { NavigationPath, RefreshRegion } from '../../types/DomainTypes';
 import { useExecuteQuery } from '../hooks/useExecuteQuery';
 import { GET_NOTIFICATIONS } from '../Notifications/graphql/getNotifications';
@@ -17,6 +17,12 @@ import PortfolioCashBalance from '../Portfolio/components/PortfolioCashBalance';
 import { PORTFOLIO_CASH_BALANCE } from '../Portfolio/graphql/portfolioCashBalance';
 import SharedSideBar from './SharedSideBar';
 import { BalanceSummary, CashBalanceResponse, SideBarItemType } from './types';
+import { useLazyExecuteQuery } from 'views/hooks/useLazyExecuteQuery';
+import { GET_PORTFOLIOS } from 'views/Portfolio/graphql/getPortfolios';
+import { PortfolioType } from 'views/Portfolio/types';
+import { getPortfolioDropdownOptions } from 'helpers';
+import { DropdownItem } from 'components/Dropdown';
+import { UserEventTypes } from 'types/UserType';
 
 export const getPortfolioBalanceDropdownOptions = (
   portfolioBalances: BalanceSummary[],
@@ -82,6 +88,17 @@ const SharedLayout: FC<SharedLayoutProps> = ({
     formatter: currencyFormatter,
   } = useContext(AppContext);
 
+  const [selectedPortfolioId, setselectedPortfolioId] = useState('');
+  const { executor: getPortfolios, data: portfoliosResult } = useLazyExecuteQuery(GET_PORTFOLIOS);
+  const portfolios = useMemo(() => {
+    return (portfoliosResult as GetResponse<PortfolioType[]>)?.portfolios?.result;
+  }, [portfoliosResult]);
+
+  const availablePortfolios = useMemo(() => {
+    setselectedPortfolioId((portfolios || [])[0]?.shopId);
+    return getPortfolioDropdownOptions(portfolios ?? []);
+  }, [portfolios]);
+
   const formatter = useMemo(
     () => ({ format: (value: number) => currencyFormatter.format(value, true) }),
     [currencyFormatter],
@@ -102,6 +119,11 @@ const SharedLayout: FC<SharedLayoutProps> = ({
   );
 
   const [loginUserInitials, setLoginUserInitials] = useState('');
+
+  const PortfolioName = useMemo(() => {
+    const portfolio = portfolios?.find((x) => x.shopId === selectedPortfolioId);
+    return portfolio?.name;
+  }, [portfolios, selectedPortfolioId]);
 
   const { results: fetchedNotifications } = useExecuteQuery('userNotifications', GET_NOTIFICATIONS, {
     variables: {
@@ -132,6 +154,10 @@ const SharedLayout: FC<SharedLayoutProps> = ({
     signOut();
     isLoggedInVar(false);
     navigate(NavigationPath.LOGIN);
+  };
+
+  const onPortfolioChange = (item: DropdownItem) => {
+    setselectedPortfolioId(item.value);
   };
 
   useEffect(() => {
@@ -171,6 +197,34 @@ const SharedLayout: FC<SharedLayoutProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh]);
+
+  useEffect(() => {
+    if (isLoggedInVar()) {
+      console.log('IsLoggedInVar', isLoggedInVar());
+      getPortfolios().then(({ data }) => {
+        const response = (data as any).portfolios as BaseResponse<PortfolioType[]>;
+        console.log('response', response);
+        if (response.isSuccess) {
+          dispatch({
+            type: AppEventTypes.UPDATE_STATE,
+            payload: { isAppReady: true },
+          });
+          dispatch({
+            type: UserEventTypes.UPDATE_USER,
+            payload: { portfolios: response.result || [] },
+          });
+        } else {
+          logError(response.message);
+          if (response.messageType === 'UNAUTHORIZED') {
+            signOut();
+            isLoggedInVar(false);
+          }
+        }
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedInVar()]);
 
   return (
     <>
@@ -236,6 +290,15 @@ const SharedLayout: FC<SharedLayoutProps> = ({
                   </PortfolioCashBalance>
                 </div>
               </Dropdown>
+              <Dropdown
+                // placeholder={displayText[DisplayTextKeys.PORTFOLIO_FILTER_PLACEHOLDER_TEXT]}
+                value={selectedPortfolioId}
+                valueTemplate={<div>{PortfolioName}</div>}
+                onItemSelect={onPortfolioChange}
+                items={availablePortfolios}
+                className="flex-1"
+                itemClassName="w-[300px]"
+              />
               <div onClick={openNotifications} className="relative cursor-pointer">
                 <>
                   {hasNotifications && <div className="rounded-full h-3 w-3 bg-orange absolute -right-1" />}

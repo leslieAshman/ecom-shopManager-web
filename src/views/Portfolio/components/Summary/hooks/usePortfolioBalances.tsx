@@ -2,7 +2,7 @@ import { ApolloError, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
 import { logError } from '../../../../../components/LogError';
 import { PortfolioBalance } from '../../../../../types/DomainTypes';
-import { PORTFOLIO_BALANCES } from '../graphql/getPortfolioBalances';
+import { PORTFOLIO_BALANCES } from '_____AAAAA__TODELETE/getPortfolioBalances';
 
 interface UsePortfolioBalancesReturnHookResponse {
   portfolioBalances: PortfolioBalance[];

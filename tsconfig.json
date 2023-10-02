@@ -16,8 +16,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "src",
+    "baseUrl": "src"
   },
-  "include": ["src"],
-  "exclude": ["src/__aToDelete"]
+  "exclude": ["src/_____AAAAA__TODELETE", "src/__aToDelete"],
+  "include": ["src"]
 }

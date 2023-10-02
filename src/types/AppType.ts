@@ -4,6 +4,7 @@ import { ActionMap } from './commonTypes';
 export interface AppState {
   isConfirmPayment: boolean;
   paymentType: TopupSlideoutViewType;
+  isAppReady: boolean;
   [key: string]: unknown;
 }
 
@@ -27,10 +28,12 @@ export type SettingsAction = ActionMap<SettingsPayload>[keyof ActionMap<Settings
 export type MiscellaneousType = Record<string, unknown>;
 export enum MiscellaneousEventTypes {
   UPDATE_MISC = 'update_misc',
+  UPDATE_UTIL = 'update_util',
 }
 
 type MiscellaneousPayload = {
   [MiscellaneousEventTypes.UPDATE_MISC]: Partial<MiscellaneousType>;
+  [MiscellaneousEventTypes.UPDATE_UTIL]: Partial<MiscellaneousType>;
 };
 
 export type MiscellaneousAction = ActionMap<MiscellaneousPayload>[keyof ActionMap<MiscellaneousPayload>];

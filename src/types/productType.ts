@@ -126,3 +126,30 @@ export enum DATA_REFS {
   NET_POSITION = 'netPosition',
   CULT_WINES_ALLOCATION_REGION = 'cultWinesAllocationRegion',
 }
+
+export interface EntityListing {
+  quantity: number;
+  price: number;
+  basePrice: number;
+}
+
+export interface StockItem {
+  id: string;
+  holdingId?: string;
+  assetId: number;
+  lwin18: string;
+  wineName: string;
+  vintage: string;
+  region: string;
+  dealDate: string;
+  dealRef: string;
+  dealCCY: string;
+  unit: string;
+  unitCount: number;
+  qty: number;
+  location?: string;
+  status?: string;
+  portfolioId?: number;
+  rotationNumber?: string;
+  sanitized_wine_name?: string;
+}

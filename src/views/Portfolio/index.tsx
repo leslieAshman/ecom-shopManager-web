@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { buildDisplayText } from '../../utils';
 import Details from './components/Details';
 
-import { ViewKeys } from './types';
+import { PortfolioType, ViewKeys } from './types';
 import Summary from './components/Summary';
 import SharedLayout from '../shared/SharedLayout';
 import { NavigationPath, PortfolioBalance } from '../../types/DomainTypes';
@@ -18,7 +18,21 @@ import ChangePasswordForm from './components/ChangePassword';
 import { GQLMessageKeys } from 'types/gqlMessageTypes';
 import { isLoggedInVar } from 'graphql/cache';
 import { MiscModal } from 'components/Misc';
+import { useLazyExecuteQuery } from 'views/hooks/useLazyExecuteQuery';
+import { GET_PORTFOLIOS } from './graphql/getPortfolios';
+import OnboardShop from 'views/Onboarding/Shop';
+import AddShop from 'views/Onboarding/Shop/components/AddShop';
+import { mockQShopModel } from 'mocks';
+import { CREATE_STRIPE_PAYMENT_MUTATION } from 'views/Accounts/graphql/stripePaymentMutation';
+import { useExecuteMutation } from 'views/hooks/useExecuteMutation';
+import { DELETE_PORTFOLIO_MUTATION } from 'views/Accounts/graphql/Mutation/deletePortfolio';
+import { Button } from 'components';
+import { logError } from 'components/LogError';
+import { BaseResponse, GetResponse } from 'types/commonTypes';
+import { AppEventTypes } from 'types/AppType';
+import { signOut } from 'services/auth';
 
+const mockShop = mockQShopModel();
 enum DisplayTextKeys {
   SUMMARY_TITLE = 'portfolio:titles.summaryPage',
   DETAIL_TITLE = 'portfolio:titles.detailsPage',
@@ -41,10 +55,12 @@ const Portfolio = () => {
   const {
     state: {
       auth: { requiredActions },
-      app: { refresh },
-      settings: { fullname },
+      app: { refresh, isAppReady },
+      settings: { fullname, email },
+      user: { id: userId, portfolios },
     },
     formatter: currencyFormatter,
+    dispatch,
   } = useContext(AppContext);
 
   const { results: cashBalanceResponse, loading: loadingTotalInvested } = useExecuteQuery(
@@ -57,7 +73,8 @@ const Portfolio = () => {
     [currencyFormatter],
   );
 
-  const { portfolioBalances, loading: loadingBalances } = usePortfolioBalances();
+  const { executor: executorDeletePortfolio } = useExecuteMutation(DELETE_PORTFOLIO_MUTATION);
+
   const displayText = useMemo(() => buildDisplayText(Object.values(DisplayTextKeys), 'portfolio', t), [t]);
   const [viewState, setViewState] = useState<ViewState>({
     viewKey: ViewKeys.SUMMARY,
@@ -87,7 +104,7 @@ const Portfolio = () => {
       viewKey,
       showBackButton,
       selectedPortfolioBalanceId: portfolioId,
-      portfolioBalance: portfolioBalances.find((x) => x.portfolioId === portfolioId)!,
+      portfolioBalance: null,
     });
   };
 
@@ -122,7 +139,15 @@ const Portfolio = () => {
     } else if (isPwdChangeRequired) setIsPwdChangeRequired(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requiredActions]);
-  console.log('DSDSDSD', isPwdChangeRequired);
+
+  const deleteShop = (shopId: string) => {
+    executorDeletePortfolio({
+      shopId,
+    });
+  };
+
+  console.log('PORTFOLIOS_DSDDS', portfolios);
+
   return (
     <>
       <SharedLayout view={NavigationPath.PORTFOLIO} title={title} onBack={onBack} showBackButton={showBackButton}>
@@ -144,12 +169,22 @@ const Portfolio = () => {
                 <span className="text-sm">{displayText[DisplayTextKeys.WELCOME_DESCRIPTION]}</span>
               </div>
             </div>
+            <div className="flex flex-col sm:flex-row sm:space-x-5 space-y-5 sm:space-y-0 mt-5 bg-red">
+              <Button
+                className="text-14 btn-primary"
+                onClick={() => {
+                  deleteShop('ZAKIN3EFC7F71');
+                }}
+              >
+                DELETE
+              </Button>
+            </div>
 
             <Summary
-              loadingBalances={loadingBalances}
+              loadingBalances={false}
               onViewChange={onViewChange}
               currentPortfolio={selectedPortfolioBalanceId}
-              portfolioBalances={portfolioBalances}
+              portfolios={portfolios ?? []}
             />
           </>
         )}
@@ -157,8 +192,19 @@ const Portfolio = () => {
       </SharedLayout>
       {isPwdChangeRequired && (
         <MiscModal>
-          <div className="p-3 border-4  flex justify-center items-center">
+          <div
+            className="p-3    sm:max-w-lg
+           sm:w-full flex justify-center items-center"
+          >
             <ChangePasswordForm />
+          </div>
+        </MiscModal>
+      )}
+
+      {isAppReady && portfolios?.length === 0 && (
+        <MiscModal>
+          <div className="">
+            <AddShop />
           </div>
         </MiscModal>
       )}

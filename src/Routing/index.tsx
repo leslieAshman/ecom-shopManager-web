@@ -15,6 +15,7 @@ import ProtectedRoute from './ProtectedRoute';
 import { signOut } from '../services/auth';
 import { isLoggedInVar } from '../graphql/cache';
 import VintradeMapper from '../views/VintradeMapper';
+import ToDeleteControls from '../_____AAAAA__TODELETE';
 
 const mapToVintradePath = '/maptovintrade';
 const publicPages = [
@@ -33,11 +34,11 @@ const Routing = () => {
       navigate(NavigationPath.LOGIN);
     }
 
-    if (isLogin && publicPages.includes(pathname as string)) {
-      signOut();
-      isLoggedInVar(false);
-      navigate(NavigationPath.LOGIN);
-    }
+    // if (isLogin && publicPages.includes(pathname as string)) {
+    //   signOut();
+    //   isLoggedInVar(false);
+    //   navigate(NavigationPath.LOGIN);
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, isLogin]);
 
@@ -47,7 +48,7 @@ const Routing = () => {
       <Route path={NavigationPath.FORGET_PASSWORD} element={<ResetPassword />} />
       <Route path={NavigationPath.REGISTRATION} element={<RegistrationForm />} />
       <Route path={mapToVintradePath} element={<VintradeMapper />} />
-
+      <Route path={NavigationPath.CONTROLS} element={<ToDeleteControls />} />
       <Route
         path={NavigationPath.PORTFOLIO}
         element={

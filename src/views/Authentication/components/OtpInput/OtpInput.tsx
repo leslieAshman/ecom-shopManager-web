@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { RE_DIGIT } from '../../../../constants';
+import { RE_DIGIT } from '../../../../ConstantsHelpers';
 import './OtpInput.css';
 
 export interface OtpInputPropType {

@@ -208,8 +208,8 @@ const CustomInput: FC<CustomInputProps> = ({
             value={displayText}
             onChange={textAreaChange}
             className={classNames(
-              'block p-2.5 w-full h-full flex-1 outline-none text-14 text-gray-900 border border-gray-200 ',
-              inputClassName || '',
+              'block p-2.5 w-full h-full flex-1 outline-none text-14 text-gray-900 border border-gray-200',
+              inputClassName || (inputClasses as string) || '',
             )}
             {...otherInput}
           ></textarea>
@@ -217,7 +217,7 @@ const CustomInput: FC<CustomInputProps> = ({
       )}
       {helperText && helperText.length > 0 && (
         <>
-          <span className={`text-sm text-red opacity-75 mt-1 ${helperTextClassName || ''}`.trim()}>{helperText} </span>
+          <span className={`text-sm text-red opacity-75 mt-1 ${helperTextClassName ?? ''}`.trim()}>{helperText} </span>
         </>
       )}
     </div>

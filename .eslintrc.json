@@ -14,7 +14,8 @@
     "airbnb/hooks",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:storybook/recommended"
   ],
   "plugins": ["react", "@typescript-eslint", "eslint-plugin-jsx-a11y"],
   "env": {
@@ -52,14 +53,24 @@
     "react/jsx-props-no-spreading": "off",
     "default-case": "off",
     "@typescript-eslint/switch-exhaustiveness-check": "warn",
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.ts", "./*.ts"] }],
-    "no-restricted-imports": ["warn", {
-      "paths": [{
-        "name": "@apollo/client",
-        "importNames": ["gql"],
-        "message": "This is deprecated, please use `import { gql } from '__generated__';`"
-      }]
-    }]
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/*.test.ts", "./*.ts"]
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": [
+          {
+            "name": "@apollo/client",
+            "importNames": ["gql"],
+            "message": "This is deprecated, please use `import { gql } from '__generated__';`"
+          }
+        ]
+      }
+    ]
   },
   "settings": {
     "import/core-modules": [

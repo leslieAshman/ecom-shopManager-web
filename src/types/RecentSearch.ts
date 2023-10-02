@@ -1,4 +1,4 @@
-export type RecentSearch =
+  export type RecentSearch =
   | {
       id: string;
       value: string;

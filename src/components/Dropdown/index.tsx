@@ -3,6 +3,16 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDown, ChevronUp } from '../../assets/icons';
 import { FC, ReactNode } from 'react';
 import { classNames } from '../../utils';
+import { DisplayField, OverridableFieldType } from 'components/DisplayForms';
+
+export const ddlDefaultConfig = {
+  itemsWrapperClassName: 'min-w-[300px] overflow-x-hidden',
+  itemWrapperStyle: { width: '100%' },
+  containerClassName: 'w-full flex-1',
+  itemsContainerClassName: 'h-[300px] overflow-y-auto w-full',
+  itemClassName: 'text-base flex flex-1',
+  className: 'flex-1 text-sm sm:text-14 text-black  whitespace-nowrap p-0 justify-start border-b border-b-gray-400',
+};
 
 export interface DropdownItem {
   id: string;
@@ -33,6 +43,7 @@ export interface DropdownPropType {
   isDisabled?: boolean;
   valueTemplate?: ReactNode;
   itemWrapperStyle?: Record<string, unknown>;
+  ignoreSingleItem?: boolean;
 }
 
 const Dropdown: FC<DropdownPropType> = ({
@@ -57,15 +68,17 @@ const Dropdown: FC<DropdownPropType> = ({
   isDisabled = false,
   autoClose = true,
   itemWrapperStyle,
+  ignoreSingleItem = true,
 }) => {
   return (
     <Menu as="div" className={`relative inline-block text-left ${containerClassName || ''}`.trim()}>
       <Menu.Button
         onClick={() => {
-          if (onOpen && items && items.length > 1) onOpen();
+          if (onOpen && ((items && items.length > 1) || ignoreSingleItem)) onOpen();
         }}
         style={style}
         className={classNames(
+          'relative',
           `${children ? '' : 'btn-dropdown '}  ${isDisabled ? `btn-disabled` : ''}`,
           `${className || ''}`,
         )}
@@ -76,20 +89,28 @@ const Dropdown: FC<DropdownPropType> = ({
           <>
             {valueTemplate || valueText || value || placeholder || ''}
 
-            {!open && items && items.length > 1 && (
+            {!open && ((items && items.length > 1) || ignoreSingleItem) && (
               <ChevronDown
-                className={`-mr-1 ml-2 mt-1 ${iconClassName || ''}  ${isDisabled ? 'opacity-30' : 'opacity-100'}`}
+                className={classNames(
+                  'absolute right-1',
+                  '-mr-1 ml-2 mt-1',
+                  `${iconClassName || ''}`,
+                  `${isDisabled ? 'opacity-30' : 'opacity-100'}`,
+                )}
                 aria-hidden="true"
               />
             )}
-            {!isDisabled && items && items.length > 1 && open && (
-              <ChevronUp className={`-mr-1 ml-2 mt-1 ${iconClassName || ''}`} aria-hidden="true" />
+            {!isDisabled && ((items && items.length > 1) || ignoreSingleItem) && open && (
+              <ChevronUp
+                className={classNames('absolute right-1', '-mr-1 ml-2 mt-1', `${iconClassName || ''}`)}
+                aria-hidden="true"
+              />
             )}
           </>
         )}
       </Menu.Button>
 
-      {(header !== undefined || footer !== undefined || (items && items.length > 1)) && (
+      {(header !== undefined || footer !== undefined || (items && items.length > 1) || ignoreSingleItem) && (
         <Transition
           as={Fragment}
           {...(!autoClose && { show: open })}

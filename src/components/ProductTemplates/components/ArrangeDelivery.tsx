@@ -15,7 +15,7 @@ import RadioButton from '../../RadioButton';
 import CustomInput from '../../CustomInput';
 import { AddressType } from '../../../types/DomainTypes';
 import { addressToString } from '../../../helpers';
-import { COUNTRIES } from '../../../constants';
+import { COUNTRIES } from '../../../ConstantsHelpers';
 import { SortAndFilterLayoutContext } from '../../Layout/SortAndFilterLayout';
 
 export const blankAddessModel = {

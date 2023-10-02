@@ -12,6 +12,7 @@ import { buildDisplayText, formatter } from '../../../utils';
 import { usePortfolioBalances } from '../../Portfolio/components/Summary/hooks/usePortfolioBalances';
 import { AccountViewType, SlideOutPanelViews, SubjectOptionKeys } from '../types';
 import AccountReport from './AccountReport';
+import { PortfolioType } from 'views/Portfolio/types';
 
 enum DisplayTextKeysEnum {
   TOPUP_SLIDEOUT_TITLE = 'account:slideout.topup.title',
@@ -32,41 +33,49 @@ interface OverviewProps {
   onClose: (nextView?: AccountViewType) => void;
 }
 
+const portfolioBalances = [
+  {
+    shopId: '1',
+  },
+] as PortfolioType[];
+
 const Overview: FC<OverviewProps> = ({ openSlideout, onClose }) => {
   const { t } = useTranslation();
   const displayText = useMemo(() => buildDisplayText(Object.values(DisplayTextKeys), 'account:overviewReport', t), [t]);
   const navigate = useNavigate();
-  const { portfolioBalances, loading: loadingBalances } = usePortfolioBalances();
-  const portfolioDropdownOptions = useMemo(() => getPortfolioDropdownOptions(portfolioBalances), [portfolioBalances]);
+  const { portfolioBalances: kkk, loading: loadingBalances } = usePortfolioBalances();
+
+  const portfolioDropdownOptions = useMemo(() => getPortfolioDropdownOptions(portfolioBalances), []);
   const [selectedPortfolioBalance, setSelectedPortfolioBalance] = useState('');
   const onPortfolioChange = (item: DropdownItem) => {
     setSelectedPortfolioBalance(item.value);
   };
 
   const balanceDetails = useMemo(() => {
-    const balanceInfo = portfolioBalances.find((x) => x.portfolioId === selectedPortfolioBalance);
+    const balanceInfo = portfolioBalances.find((x) => x.shopId === selectedPortfolioBalance);
 
     return {
-      pendingBalance: balanceInfo?.balancePending || 0,
-      accountBalance: balanceInfo?.balance || 0,
+      pendingBalance: 0,
+      accountBalance: 0,
     };
-  }, [portfolioBalances, selectedPortfolioBalance]);
+  }, [selectedPortfolioBalance]);
 
   const selectedPortfolioInfo = useMemo(() => {
     const portfolios = getPortfolioInfo(portfolioBalances, displayText, selectedPortfolioBalance);
 
     return {
       ...portfolios,
-      info: portfolios.info.filter((x) =>
-        [
-          displayText[PortfolioBalanceInfo.PORTFOLIO_VALUATION_TEXT],
-          displayText[PortfolioBalanceInfo.NET_PROCEEDS_FROM_SALES_TEXT],
-          displayText[PortfolioBalanceInfo.NET_CONTRIBUTIONS_TEXT],
-          displayText[PortfolioBalanceInfo.NET_POSITION_TEXT],
-        ].includes(x.title),
-      ),
+      // info: portfolios.info.filter((x) =>
+      //   [
+      //     displayText[PortfolioBalanceInfo.PORTFOLIO_VALUATION_TEXT],
+      //     displayText[PortfolioBalanceInfo.NET_PROCEEDS_FROM_SALES_TEXT],
+      //     displayText[PortfolioBalanceInfo.NET_CONTRIBUTIONS_TEXT],
+      //     displayText[PortfolioBalanceInfo.NET_POSITION_TEXT],
+      //   ].includes(x.title),
+      // ),
+      info: [displayText[PortfolioBalanceInfo.PORTFOLIO_VALUATION_TEXT]],
     };
-  }, [portfolioBalances, selectedPortfolioBalance, displayText]);
+  }, [selectedPortfolioBalance, displayText]);
 
   return (
     <div className="flex flex-col flex-1 p-5 w-full h-full">
@@ -87,7 +96,7 @@ const Overview: FC<OverviewProps> = ({ openSlideout, onClose }) => {
         )}
         {!loadingBalances && (
           <div className="flex w-full flex-wrap gap-5">
-            <div className="bg-accent_stone min-w-[360px]  w-full flex-1 grid grid-cols-2 gap-2 p-3 rounded-md ">
+            {/* <div className="bg-accent_stone min-w-[360px]  w-full flex-1 grid grid-cols-2 gap-2 p-3 rounded-md ">
               {selectedPortfolioInfo.info &&
                 selectedPortfolioInfo.info.length > 0 &&
                 selectedPortfolioInfo.info.map((pBal, index) => {
@@ -100,7 +109,7 @@ const Overview: FC<OverviewProps> = ({ openSlideout, onClose }) => {
                     </div>
                   );
                 })}
-            </div>
+            </div> */}
             <div className="flex items-center justify-center flex-1 ">
               <div className=" w-full p-5 divide-x  divide-x-gray-900 flex flex-nowrap items-center rounded-lg">
                 <div className="flex flex-col px-3  pr-10 flex-1 items-end justify-center">

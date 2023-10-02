@@ -1,9 +1,7 @@
-import { useReactiveVar } from '@apollo/client';
-import React, { createContext, useReducer, Dispatch, ReactNode, useEffect, useMemo } from 'react';
+import React, { createContext, useReducer, Dispatch, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GET_MISCELLANEOUS } from '../App/graphql/getMiscellaneous';
 import { logError } from '../components/LogError';
-import { isLoggedInVar } from '../graphql/cache';
 import { authReducer, myCellarReducer } from '../reducers';
 import { appReducer } from '../reducers/appReducer';
 import { miscellaneousReducer } from '../reducers/miscellaneousReducer';
@@ -15,33 +13,22 @@ import {
   MiscellaneousAction,
   MiscellaneousType,
   SettingsAction,
-  SettingsEventTypes,
   UserSettings,
 } from '../types/AppType';
-import { AuthAction, AuthEventTypes, AuthState } from '../types/AuthType';
+import { AuthAction, AuthState } from '../types/AuthType';
 import { CurrencyFormater } from '../types/commonTypes';
 import { ProductActions } from '../types/productType';
 import { currencyFormatter } from '../utils';
-import { GET_USER_PREFERENCES } from '../views/Accounts/graphql/getUserPreferences';
 import { TopupSlideoutViewType } from '../views/Accounts/types';
 import { useExecuteQuery } from '../views/hooks/useExecuteQuery';
-import { useLazyExecuteQuery } from '../views/hooks/useLazyExecuteQuery';
 
-import { GET_AUTH_USER } from '../views/Accounts/graphql/getAuthUser';
-import { GET_USER_PROFILE } from '../views/Accounts/graphql/getUserProfile';
-import { UserProfile } from '../types/DomainTypes';
 import 'moment/min/locales';
 import moment from 'moment';
-
-declare global {
-  interface Heap {
-    identify(identity: string): VoidFunction;
-  }
-
-  interface Window {
-    heap: Heap;
-  }
-}
+import { portfolioReducer } from 'views/Portfolio/reducer';
+import { BaseUser, UserAction } from 'types/UserType';
+import { userReducer } from 'reducers/userReducer';
+import { PortfolioType, PortfolioAction } from 'views/Portfolio/types';
+import { getBasePortfolioModel } from 'helpers';
 
 type ProductType = {
   id: number;
@@ -55,6 +42,8 @@ type InitialStateType = {
   settings: UserSettings;
   miscellaneous: MiscellaneousType;
   myCellar: ProductType[];
+  portfolio: PortfolioType;
+  user: Partial<BaseUser>;
 };
 
 const initialState = {
@@ -62,6 +51,7 @@ const initialState = {
   app: {
     id: 'Portal',
     isConfirmPayment: false,
+    isAppReady: false,
     paymentType: TopupSlideoutViewType.STRIPE_RECURRING_PAYMENT,
     hasNotifications: false,
     refresh: [],
@@ -73,6 +63,12 @@ const initialState = {
     useLoginEmail: false,
     fullname: '',
   },
+  portfolio: getBasePortfolioModel(),
+  user: {
+    email: '',
+    portfolios: [],
+  },
+
   miscellaneous: {
     frequencyIntervalMap: new Map<string, string>([
       ['day', 'daily'],
@@ -86,7 +82,9 @@ const initialState = {
 
 const AppContext = createContext<{
   state: InitialStateType;
-  dispatch: Dispatch<AuthAction | ProductActions | SettingsAction | MiscellaneousAction | AppAction>;
+  dispatch: Dispatch<
+    AuthAction | ProductActions | SettingsAction | MiscellaneousAction | AppAction | PortfolioAction | UserAction
+  >;
   onLanguageChange?: (lang: string) => void;
   formatter: CurrencyFormater;
 }>({
@@ -98,15 +96,19 @@ const AppContext = createContext<{
 });
 
 const mainReducer = (
-  { auth, myCellar, settings, miscellaneous, app }: InitialStateType,
-  action: AuthAction | ProductActions | SettingsAction | MiscellaneousAction | AppAction,
-) => ({
-  myCellar: myCellarReducer(myCellar, action as ProductActions),
-  auth: authReducer(auth, action as AuthAction),
-  app: appReducer(app, action as AppAction),
-  settings: settingsReducer(settings, action as SettingsAction),
-  miscellaneous: miscellaneousReducer(miscellaneous, action as MiscellaneousAction),
-});
+  { auth, myCellar, settings, miscellaneous, app, portfolio, user }: InitialStateType,
+  action: AuthAction | ProductActions | SettingsAction | MiscellaneousAction | AppAction | PortfolioAction | UserAction,
+) =>
+  ({
+    myCellar: myCellarReducer(myCellar, action as ProductActions),
+    entity: portfolioReducer({ portfolios: user.portfolios, ...portfolio }, action as PortfolioAction),
+    auth: authReducer(auth, action as AuthAction),
+    app: appReducer(app, action as AppAction),
+    settings: settingsReducer(settings, action as SettingsAction),
+    miscellaneous: miscellaneousReducer(miscellaneous, action as MiscellaneousAction),
+    user: userReducer(user, action as UserAction),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 
 interface AppProviderProps {
   children: ReactNode;
@@ -115,23 +117,21 @@ interface AppProviderProps {
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(mainReducer, initialState);
   const { error: miscError } = useExecuteQuery('miscellaneous', GET_MISCELLANEOUS);
-  //const { executor: refetchUserPreferences, data: userPreferences } = useLazyExecuteQuery(GET_USER_PREFERENCES);
+
   // const { executor: getUserInfo, data: userInfo } = useLazyExecuteQuery(GET_AUTH_USER);
   // const { executor: getUserProfile } = useLazyExecuteQuery(GET_USER_PROFILE);
 
   const { i18n } = useTranslation();
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
-  const onLanguageChange = (lang: string, updateApp = true) => {
+  const onLanguageChange = (lang: string) => {
     i18n.changeLanguage(lang);
     moment.locale(lang);
-    if (updateApp)
-      dispatch({
-        type: SettingsEventTypes.UPDATE_SETTINGS,
-        payload: { language: lang },
-      });
+    // if (updateApp)
+    //   dispatch({
+    //     type: SettingsEventTypes.UPDATE_SETTINGS,
+    //     payload: { language: lang },
+    //   });
   };
 
-  const currentLanguage = useMemo(() => i18n.language || window.localStorage.i18nextLng || navigator.language, [i18n]);
   const currencyConverter = useMemo(() => {
     return {
       format: (value: number, isNew = false) => {
@@ -175,18 +175,33 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // }, [userPreferences]);
 
   // useEffect(() => {
-  //   if (isLoggedIn !== state.auth.isLogin) {
-  //     if (isLoggedIn) {
-  //       refetchUserPreferences();
-  //       getUserInfo();
-  //     }
-  //     dispatch({
-  //       type: AuthEventTypes.LOGIN,
-  //       payload: { isLogin: isLoggedIn },
+  //   if (isLoggedIn) {
+  //     getPortfolios().then(({ data }) => {
+  //       const response = (data as any).portfolios as BaseResponse<Portfolio[]>;
+  //       console.log('response', response);
+  //       if (response.isSuccess) {
+  //         dispatch({
+  //           type: UserEventTypes.UPDATE_USER,
+  //           payload: { portfolios: response.result || [] },
+  //         });
+
+  //         dispatch({
+  //           type: AppEventTypes.UPDATE_STATE,
+  //           payload: { isAppReady: true },
+  //         });
+  //       } else {
+  //         logError(response.message);
+  //         if (response.messageType === 'UNAUTHORIZED') {
+  //           signOut();
+  //           isLoggedInVar(false);
+  //         }
+  //       }
   //     });
+  //     // getUserInfo();
   //   }
+
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isLoggedIn, state.auth.isLogin]);
+  // }, [isLoggedIn]);
 
   if (miscError) {
     logError(miscError);

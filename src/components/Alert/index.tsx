@@ -7,8 +7,9 @@ interface AlertProps {
   show: boolean;
   className?: string;
   onClose?: () => void;
+  isRelative?: boolean;
 }
-const Alert: FC<AlertProps> = ({ children, icon, className, show = false, onClose }) => {
+const Alert: FC<AlertProps> = ({ children, icon, className, isRelative = false, show = false, onClose }) => {
   const dismiss = () => {
     if (onClose) {
       onClose();
@@ -19,8 +20,14 @@ const Alert: FC<AlertProps> = ({ children, icon, className, show = false, onClos
   return (
     <div className={classNames('flex items-center  px-4 py-5 space-x-2', className || '')} role="alert">
       {icon}
-      <div className="overflow-y-auto max-h-[200px]">{children}</div>
-      <span className="absolute -top-2 bottom-0 -right-3 px-4 py-3 cursor-pointer" onClick={dismiss}>
+      <div className="overflow-y-auto max-h-[200px] w-full">{children}</div>
+      <span
+        className={classNames(
+          ' px-4 py-3 cursor-pointer',
+          isRelative ? 'relative' : 'absolute -top-2 bottom-0 -right-3 ',
+        )}
+        onClick={dismiss}
+      >
         <svg
           className="fill-current h-6 w-6 text-red-500"
           role="button"

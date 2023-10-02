@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 import { gql } from '@apollo/client';
 
 export const PORTFOLIO_PERFORMANCE_OVER_TIME = gql`
