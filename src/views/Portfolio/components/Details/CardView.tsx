@@ -7,16 +7,16 @@ import Loading from '../../../../components/Loading/loading';
 
 import { TableCell, TableRow } from '../../../../components/Table';
 import { getRegions } from '../../../../helpers';
-import { DATA_REFS, Product } from '../../../../types/productType';
+import { DATA_REFS } from '../../../../types/productType';
 import { formatter, sortItems, toInternalId } from '../../../../utils';
 import useFadeInOnScroll from '../../../hooks/useFadeInOnScroll';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll';
 import MarketDataChart from './MarketDataChart';
 
-interface DetailCardProps {
+interface DetailCardProps<T> {
   tableRows: TableRow[];
   dateFormat: string;
-  filteredItems: Product[];
+  filteredItems: T[];
   isCompact: boolean;
   onItemClick?: (row: TableRow) => void;
 }
@@ -39,7 +39,13 @@ const extractCardDetails = (cells: TableCell[]) => {
   return result as Record<string, string>;
 };
 
-const DetailCard: FC<DetailCardProps> = ({ tableRows, dateFormat, filteredItems, isCompact, onItemClick }) => {
+const DetailCard = <T extends { id?: string; unit?: number }>({
+  tableRows,
+  dateFormat,
+  filteredItems,
+  isCompact,
+  onItemClick,
+}: DetailCardProps<T>) => {
   const { t } = useTranslation();
   const { isLoading, results, lastItemRef } = useInfiniteScroll(tableRows);
   const regionColors = useMemo(() => getRegions(t), [t]);
@@ -91,13 +97,11 @@ const DetailCard: FC<DetailCardProps> = ({ tableRows, dateFormat, filteredItems,
                     <div className="flex">
                       <span
                         style={{
-                          backgroundColor: regionColors.find(
-                            (x) => x.text.toLowerCase() === rawData.cultWinesAllocationRegion?.toLowerCase(),
-                          )?.color,
+                          backgroundColor: regionColors.find((x) => x.text.toLowerCase() === 'bordeaux')?.color,
                         }}
                         className="rounded-full px-5 py-1 items-center justify-center text-sm mr-3 font-semibold text-white"
                       >
-                        {t(`common:regions.${toInternalId(rawData.cultWinesAllocationRegion || '')}`)}
+                        {t(`common:regions.${toInternalId('bordeaux')}`)}
                       </span>
                       <span className="text-14">{rawData.unit}</span>
                     </div>
@@ -122,12 +126,12 @@ const DetailCard: FC<DetailCardProps> = ({ tableRows, dateFormat, filteredItems,
                       {' '}
                       {`Deal date: ${moment(data[DATA_REFS.DEAL_DATE]).format(dateFormat)}`}
                     </span>
-                    {rawData.qtyForSale > 0 && (
+                    {/* {rawData.qtyForSale > 0 && (
                       <div className="bg-accent_orange rounded-full px-3 py-1 flex items-center  text-xs">
                         <TagIcon className="mr-2" />
                         <span> {`${rawData.qtyForSale}x ${t('portfolio:forSale')}`}</span>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

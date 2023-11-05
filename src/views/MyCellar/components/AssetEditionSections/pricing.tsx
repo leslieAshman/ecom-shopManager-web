@@ -24,10 +24,17 @@ interface PricingSectionProps {
   modelIn: PricingModelType;
   type: string;
   translationKey: string;
+  timestamp?: string;
   onChange?: (upModel: PricingModelType, type: string) => void;
 }
 
-const PricingSection: FC<PricingSectionProps> = ({ modelIn, translationKey, onChange, type = 'pricing' }) => {
+const PricingSection: FC<PricingSectionProps> = ({
+  modelIn,
+  translationKey,
+  timestamp,
+  onChange,
+  type = 'pricing',
+}) => {
   const { t } = useTranslation('portfolio');
   const [model, setModel] = useState<PricingModelType>({} as PricingModelType);
   const [priceMetadata, setPriceMetadata] = useState<string>('');
@@ -125,7 +132,7 @@ const PricingSection: FC<PricingSectionProps> = ({ modelIn, translationKey, onCh
           type: DisplayFieldType.CUSTOM,
           customTemplate: () => {
             return (
-              <div className="flex flex-wrap w-ful">
+              <div className="flex flex-wrap w-full bg-[#f8f9fd] p-5 ">
                 {model.priceMeta?.map((item, x) => {
                   return (
                     <Button
@@ -166,7 +173,7 @@ const PricingSection: FC<PricingSectionProps> = ({ modelIn, translationKey, onCh
   useEffect(() => {
     setModel(modelIn);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [timestamp]);
 
   useEffect(() => {
     onChange?.({ ...model }, type);

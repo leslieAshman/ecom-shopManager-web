@@ -18,6 +18,10 @@ export enum EventTypes {
   CANCEL = 'cancel',
   SAVE = 'save',
   CLOSE = 'close',
+  EDIT = 'edit',
+  PREVIEW = 'preview',
+  NEW = 'new',
+  DELETE = 'delete',
 }
 
 export interface EventArgs {

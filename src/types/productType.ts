@@ -103,7 +103,7 @@ export interface Product extends CurrentHolding {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export enum DATA_REFS {
   ASSETID = 'lwin18',
-  NAME = 'wineName',
+  NAME = 'title',
   DEAL_DATE = 'dealDate',
   UNIT = 'unit',
   QUANTITY = 'qty',

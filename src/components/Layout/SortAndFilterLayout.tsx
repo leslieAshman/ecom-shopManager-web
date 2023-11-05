@@ -10,19 +10,21 @@ import { Switch } from '@headlessui/react';
 import ExportCSV from '../../components/ExportToCsv';
 import ExpandingSearch, { processSearch } from '../../components/ExpandingSearch';
 import { DropdownItem } from '../../components/Dropdown';
-import { DATA_REFS, Product } from '../../types/productType';
+import { DATA_REFS } from '../../types/productType';
 import PDFilters, { DDFilterItem, Filters, FilterTypes } from '../../components/Filters/Filters';
 import { SortByOption, SortByType } from '../../views/Portfolio/types';
 import { onExportToXlsx } from '../../helpers';
 import moment from 'moment';
 import Switcher from 'components/Switcher';
+import { Asset } from '__generated__/graphql';
+import { AssetTypeExtended } from 'views/MyCellar/components/types';
 
 export interface SortAndFilterLayoutContextType {
   config: SlideoutConfigType;
   updateSlideoutConfig: (config: Record<string, unknown>) => void;
-  openSlideout: (product: Product, config?: Record<string, unknown>) => void;
-  openSlideoutWithProcessor: (processor: () => Promise<Product>) => void;
-  selectedProduct?: Product;
+  openSlideout: (product: AssetTypeExtended, config?: Record<string, unknown>) => void;
+  openSlideoutWithProcessor: (processor: () => Promise<AssetTypeExtended>) => void;
+  selectedProduct?: AssetTypeExtended;
   cardLayoutConfig?: {
     show: boolean;
     isCompact: boolean;
@@ -42,12 +44,13 @@ enum SlideOutPanelViews {
 const searchConfig = {
   uniqueIdRef: null,
   props: [DATA_REFS.NAME, DATA_REFS.VINTAGE],
-  customFindFn: (data: Product[], value: string) => {
+  customFindFn: <T,>(data: T[], value: string) => {
     return [...data].filter((x) => {
-      return (
-        `${x[DATA_REFS.SANITIZED_WINE_NAME]}`.toLowerCase().startsWith(value.toLowerCase()) ||
-        `${x[DATA_REFS.VINTAGE]} ${x[DATA_REFS.SANITIZED_WINE_NAME]}`.toLowerCase().startsWith(value.toLowerCase())
-      );
+      return x;
+      // return (
+      //   `${x[DATA_REFS.SANITIZED_WINE_NAME]}`.toLowerCase().startsWith(value.toLowerCase()) ||
+      //   `${x[DATA_REFS.VINTAGE]} ${x[DATA_REFS.SANITIZED_WINE_NAME]}`.toLowerCase().startsWith(value.toLowerCase())
+      // );
     });
   },
 };
@@ -70,17 +73,17 @@ const DisplayTextKeys = {
   TABLE_VIEW: 'portfolio:filters.table-view',
 };
 
-export interface TabFilters {
+export interface TabFilters<T> {
   selections: Filters | undefined;
-  data: Product[] | null;
+  data: T[] | null;
 }
-export interface TabState {
+export interface TabState<T> {
   id: string;
   sortTableBy: SortByType;
   searchQuery: string;
   isCardView: boolean;
   isCompact: boolean;
-  filters: TabFilters | null;
+  filters: TabFilters<T> | null;
   timestamp: number;
 }
 
@@ -94,19 +97,19 @@ interface SlideoutConfigType {
   isDetailsFetched?: boolean;
 }
 
-interface SortAndFilterLayoutProp {
-  products: Product[];
+interface SortAndFilterLayoutProp<T> {
+  products: T[];
   children: ReactNode;
   head?: () => ReactNode;
   slideoutContent?: (
-    selectedProduct: Product,
+    selectedProduct: T,
     timeStamp: number,
     onClose?: () => void,
     setTitle?: (title: string) => void,
     isDetailsFetched?: boolean,
   ) => ReactNode;
-  onFilter?: (results: Product[], currentTabState?: TabState | null) => void;
-  tabState?: TabState | null;
+  onFilter?: (results: T[], currentTabState?: TabState<T> | null) => void;
+  tabState?: TabState<T> | null;
   compId?: string;
   columns?: TableColumnType[];
   sortByOptions?: SortByOption[];
@@ -119,7 +122,7 @@ interface SortAndFilterLayoutProp {
   loading?: boolean;
 }
 
-const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
+const SortAndFilterLayout = <T extends { id: string }>({
   products,
   children,
   head,
@@ -136,7 +139,7 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
   filterConfigure,
   filterOverrides,
   loading = true,
-}) => {
+}: SortAndFilterLayoutProp<T>) => {
   const { t } = useTranslation();
   const defaultTableSortingOptions = () => {
     const { id, text } = (sortByOptions || []).find((x) => x.id === DATA_REFS.DEAL_DATE)!;
@@ -154,10 +157,10 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [isCardView, setIsCardView] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
-  const [currentFilters, setCurrentFilters] = useState<TabFilters | null>();
-  const [currentTabState, setCurrentTabState] = useState<TabState | null>();
+  const [currentFilters, setCurrentFilters] = useState<TabFilters<T> | null>();
+  const [currentTabState, setCurrentTabState] = useState<TabState<T> | null>();
 
-  const [selectedProduct, setSelectedProduct] = useState<Product>();
+  const [selectedProduct, setSelectedProduct] = useState<T>();
   const displayText = useMemo(() => buildDisplayText(Object.values(DisplayTextKeys), 'common', t), [t]);
   const [slideOutPanelConfig, setSlideOutPanelConfig] = useState<SlideoutConfigType>({
     showBackButton: false,
@@ -168,8 +171,8 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
     isDetailsFetched: false,
   });
 
-  const [filteredViewData, setFilteredViewData] = useState<Product[] | undefined>();
-  const openSlideout = (product: Product, config?: Record<string, unknown>) => {
+  const [filteredViewData, setFilteredViewData] = useState<T[] | undefined>();
+  const openSlideout = (product: T, config?: Record<string, unknown>) => {
     setSelectedProduct({ ...product! });
     setSlideOutPanelConfig({
       open: true,
@@ -189,7 +192,7 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
     });
   };
 
-  const openSlideoutWithProcessor = (processor: () => Promise<Product>) => {
+  const openSlideoutWithProcessor = (processor: () => Promise<T>) => {
     if (processor)
       processor().then((product) => {
         setSelectedProduct({ ...product! });
@@ -216,12 +219,12 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
     });
   };
 
-  const updateViewDatasource = (sortArg: SortByType, data?: Product[], isSearch = false) => {
+  const updateViewDatasource = (sortArg: SortByType, data?: T[], isSearch = false) => {
     if (loading) return;
-    let sortedTableData = sortItems<Product>(
+    let sortedTableData = sortItems<T>(
       data || filteredViewData || products,
       SortDirection.ASCENDING === sortArg.direction,
-      sortArg.id as keyof Product,
+      sortArg.id as keyof T,
     );
 
     if (!isSearch) {
@@ -264,7 +267,7 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
   };
 
   const onShowMoreOpen = () => {};
-  const onApplyFilter = (filterResults: Product[], filters?: Filters) => {
+  const onApplyFilter = (filterResults: T[], filters?: Filters) => {
     updateViewDatasource(sortTableBy, [...filterResults]);
     setCurrentFilters({ selections: filters, data: filterResults });
     setSlideOutPanelConfig({ ...slideOutPanelConfig, open: false });
@@ -272,7 +275,7 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
 
   const openSideoutSidePanel = useCallback(
     (
-      sProduct: Product,
+      sProduct: T,
       timeStamp: number,
       onClose?: () => void,
       setTitle?: (title: string) => void,
@@ -281,7 +284,7 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
     [slideoutContent],
   );
 
-  const onSearch = (results: Product[], query?: string) => {
+  const onSearch = (results: T[], query?: string) => {
     setSearchQuery(query || '');
     updateViewDatasource(sortTableBy, [...results], true);
   };
@@ -342,201 +345,202 @@ const SortAndFilterLayout: FC<SortAndFilterLayoutProp> = ({
 
   const numberOfResults = (filteredViewData || []).length;
   return (
-    <SortAndFilterLayoutContext.Provider
-      value={{
-        config: slideOutPanelConfig,
-        updateSlideoutConfig,
-        openSlideout,
-        openSlideoutWithProcessor,
-        selectedProduct,
-        cardLayoutConfig: { show: isCardView, isCompact: !showCompactSwitch ? true : isCompact },
-      }}
-    >
-      {head && head()}
-      <>
-        <div className={`${filterPanelContainerClassName || ''}`.trim()}>
-          <div
-            className={`flex items-center ${
-              products.length === 0 ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
-            }`.trim()}
-          >
-            <Dropdown
-              autoClose={false}
-              open={showSortByOptions}
-              value={tmpTableSortOrderBy.id}
-              valueTemplate={
-                <div className="flex">
-                  <span className="text-base text-black mr-1">{`${sortTableBy.text}`}</span>
-                  <span className="text-gray-500 flex items-center">{`(${
-                    displayText[DisplayTextKeys[sortTableBy.direction]]
-                  })`}</span>
-                </div>
-              }
-              onOpen={toggleSortByVisibility}
-              onItemSelect={onSortTableByChange}
-              items={sortByOptions}
-              itemsContainerClassName="h-[250px] overflow-y-auto"
-              itemClassName="py-5 text-base"
-              className="flex-1 text-sm sm:text-base whitespace-nowrap p-0 justify-start"
-              header={
-                <div className="flex flex-col relative">
-                  <CloseBlackIcon onClick={onCloseSortTableByPanel} className="cursor-pointer absolute right-3 top-3" />
-                  <BitSelector
-                    title={displayText[DisplayTextKeys.ORDER]}
-                    leftText={displayText[DisplayTextKeys[SortDirection.ASCENDING]]}
-                    rightText={displayText[DisplayTextKeys[SortDirection.DESCENDING]]}
-                    isTrue={tmpTableSortOrderBy.direction === SortDirection.ASCENDING}
-                    onClick={(isAsc) => {
-                      setTmpTableSortOrderBy({
-                        ...tmpTableSortOrderBy,
-                        direction: isAsc ? SortDirection.ASCENDING : SortDirection.DESCENDING,
-                      });
-                    }}
-                  />
-                  <div className="border-t border-t-gray-100 p-3 text-14">{displayText[DisplayTextKeys.SORTBY]} </div>
-                </div>
-              }
-              footer={
-                <div className="p-5 border-t border-t-100 flex w-full">
-                  <Button
-                    className={`btn text-14 font-normal bg-orange rounded-full flex-1  text-black`}
-                    onClick={onApplyTableSortingFilter}
-                    props={{
-                      name: 'viewPortfolio',
-                    }}
-                  >
-                    {displayText[DisplayTextKeys.APPLY]}
-                  </Button>
-                </div>
-              }
-            />
-            {!slideOutPanelConfig.open && (
-              <div
-                className={`flex-1 flex justify-end items-center ${
-                  products.length === 0 ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
-                }`.trim()}
-              >
-                <ExpandingSearch
-                  uniqueIdRef={searchConfig.uniqueIdRef}
-                  placeholder={displayText[DisplayTextKeys.SEARCH_PLACEHOLDER_TEXT]}
-                  data={currentFilters?.data || products}
-                  props={searchConfig.props}
-                  onSearch={onSearch}
-                  query={searchQuery}
-                  customFindFn={searchConfig.customFindFn}
-                  className="focus:bg-white"
-                />
-                <div className="relative cursor-pointer" onClick={() => onOpenFiltersTray()}>
-                  <FilterIcon className="ml-[20px]  h-8" />
-                  {currentFilters?.selections && (
-                    <div className="rounded-full h-3 w-3 bg-orange absolute top-1 -right-1" />
-                  )}
-                </div>
-                {moreSelectorTemplate && moreSelectorTemplate()}
-                {!moreSelectorTemplate && (
-                  <Dropdown
-                    onOpen={onShowMoreOpen}
-                    containerClassName="ml-[32px]"
-                    itemsWrapperClassName="right-0"
-                    itemClassName="py-5 text-base"
-                    className="flex-1 text-sm sm:text-base whitespace-nowrap p-0 justify-start h-8"
-                    header={
-                      <div className="flex flex-col">
-                        <BitSelector
-                          title={displayText[DisplayTextKeys.SHOW_MORE]}
-                          leftText={displayText[DisplayTextKeys.CARD_VIEW]}
-                          rightText={displayText[DisplayTextKeys.TABLE_VIEW]}
-                          isTrue={isCardView}
-                          onClick={(isViewAsCard) => setIsCardView(isViewAsCard)}
-                        />
-                        {showCompactSwitch && (
-                          <div className="p-3 flex items-center justify-between">
-                            <div className="flex items-center">
-                              <CompactIcon className="mr-3" />
-                              <span className="text-base">{displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}</span>
-                            </div>
+    <div></div>
+    // <SortAndFilterLayoutContext.Provider
+    //   value={{
+    //     config: slideOutPanelConfig,
+    //     updateSlideoutConfig,
+    //     openSlideout,
+    //     openSlideoutWithProcessor,
+    //     selectedProduct,
+    //     cardLayoutConfig: { show: isCardView, isCompact: !showCompactSwitch ? true : isCompact },
+    //   }}
+    // >
+    //   {head && head()}
+    //   <>
+    //     <div className={`${filterPanelContainerClassName || ''}`.trim()}>
+    //       <div
+    //         className={`flex items-center ${
+    //           products.length === 0 ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
+    //         }`.trim()}
+    //       >
+    //         <Dropdown
+    //           autoClose={false}
+    //           open={showSortByOptions}
+    //           value={tmpTableSortOrderBy.id}
+    //           valueTemplate={
+    //             <div className="flex">
+    //               <span className="text-base text-black mr-1">{`${sortTableBy.text}`}</span>
+    //               <span className="text-gray-500 flex items-center">{`(${
+    //                 displayText[DisplayTextKeys[sortTableBy.direction]]
+    //               })`}</span>
+    //             </div>
+    //           }
+    //           onOpen={toggleSortByVisibility}
+    //           onItemSelect={onSortTableByChange}
+    //           items={sortByOptions}
+    //           itemsContainerClassName="h-[250px] overflow-y-auto"
+    //           itemClassName="py-5 text-base"
+    //           className="flex-1 text-sm sm:text-base whitespace-nowrap p-0 justify-start"
+    //           header={
+    //             <div className="flex flex-col relative">
+    //               <CloseBlackIcon onClick={onCloseSortTableByPanel} className="cursor-pointer absolute right-3 top-3" />
+    //               <BitSelector
+    //                 title={displayText[DisplayTextKeys.ORDER]}
+    //                 leftText={displayText[DisplayTextKeys[SortDirection.ASCENDING]]}
+    //                 rightText={displayText[DisplayTextKeys[SortDirection.DESCENDING]]}
+    //                 isTrue={tmpTableSortOrderBy.direction === SortDirection.ASCENDING}
+    //                 onClick={(isAsc) => {
+    //                   setTmpTableSortOrderBy({
+    //                     ...tmpTableSortOrderBy,
+    //                     direction: isAsc ? SortDirection.ASCENDING : SortDirection.DESCENDING,
+    //                   });
+    //                 }}
+    //               />
+    //               <div className="border-t border-t-gray-100 p-3 text-14">{displayText[DisplayTextKeys.SORTBY]} </div>
+    //             </div>
+    //           }
+    //           footer={
+    //             <div className="p-5 border-t border-t-100 flex w-full">
+    //               <Button
+    //                 className={`btn text-14 font-normal bg-orange rounded-full flex-1  text-black`}
+    //                 onClick={onApplyTableSortingFilter}
+    //                 props={{
+    //                   name: 'viewPortfolio',
+    //                 }}
+    //               >
+    //                 {displayText[DisplayTextKeys.APPLY]}
+    //               </Button>
+    //             </div>
+    //           }
+    //         />
+    //         {!slideOutPanelConfig.open && (
+    //           <div
+    //             className={`flex-1 flex justify-end items-center ${
+    //               products.length === 0 ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
+    //             }`.trim()}
+    //           >
+    //             <ExpandingSearch
+    //               uniqueIdRef={searchConfig.uniqueIdRef}
+    //               placeholder={displayText[DisplayTextKeys.SEARCH_PLACEHOLDER_TEXT]}
+    //               data={currentFilters?.data || products}
+    //               props={searchConfig.props}
+    //               onSearch={onSearch}
+    //               query={searchQuery}
+    //               customFindFn={searchConfig.customFindFn}
+    //               className="focus:bg-white"
+    //             />
+    //             <div className="relative cursor-pointer" onClick={() => onOpenFiltersTray()}>
+    //               <FilterIcon className="ml-[20px]  h-8" />
+    //               {currentFilters?.selections && (
+    //                 <div className="rounded-full h-3 w-3 bg-orange absolute top-1 -right-1" />
+    //               )}
+    //             </div>
+    //             {moreSelectorTemplate && moreSelectorTemplate()}
+    //             {!moreSelectorTemplate && (
+    //               <Dropdown
+    //                 onOpen={onShowMoreOpen}
+    //                 containerClassName="ml-[32px]"
+    //                 itemsWrapperClassName="right-0"
+    //                 itemClassName="py-5 text-base"
+    //                 className="flex-1 text-sm sm:text-base whitespace-nowrap p-0 justify-start h-8"
+    //                 header={
+    //                   <div className="flex flex-col">
+    //                     <BitSelector
+    //                       title={displayText[DisplayTextKeys.SHOW_MORE]}
+    //                       leftText={displayText[DisplayTextKeys.CARD_VIEW]}
+    //                       rightText={displayText[DisplayTextKeys.TABLE_VIEW]}
+    //                       isTrue={isCardView}
+    //                       onClick={(isViewAsCard) => setIsCardView(isViewAsCard)}
+    //                     />
+    //                     {showCompactSwitch && (
+    //                       <div className="p-3 flex items-center justify-between">
+    //                         <div className="flex items-center">
+    //                           <CompactIcon className="mr-3" />
+    //                           <span className="text-base">{displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}</span>
+    //                         </div>
 
-                            <Switcher
-                              checked={isCompact}
-                              onChange={(val: boolean) => {
-                                setIsCompact(val);
-                              }}
-                              text={displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    }
-                    footer={
-                      <ExportCSV
-                        csvData={filteredViewData || []}
-                        fileName={`${moment().format('YYYY-MM-DD HH:mm')}`}
-                        onPrepareData={(data: Product[]) => onExportToXlsx(data, columns)}
-                      >
-                        <div className="p-5 flex cursor-pointer items-center">
-                          <DownloadIcon className="mr-5" />
-                          <span className="text-base">{displayText[DisplayTextKeys.EXPORT_TO_XLS]}</span>
-                        </div>
-                      </ExportCSV>
-                    }
-                  >
-                    <ThreeDots className="cursor-pointer h-5 " />
-                  </Dropdown>
-                )}
-              </div>
-            )}
-          </div>
+    //                         <Switcher
+    //                           checked={isCompact}
+    //                           onChange={(val: boolean) => {
+    //                             setIsCompact(val);
+    //                           }}
+    //                           text={displayText[DisplayTextKeys.SHOW_COMPACT_LIST]}
+    //                         />
+    //                       </div>
+    //                     )}
+    //                   </div>
+    //                 }
+    //                 footer={
+    //                   <ExportCSV
+    //                     csvData={filteredViewData || []}
+    //                     fileName={`${moment().format('YYYY-MM-DD HH:mm')}`}
+    //                     onPrepareData={(data: T[]) => onExportToXlsx(data, columns)}
+    //                   >
+    //                     <div className="p-5 flex cursor-pointer items-center">
+    //                       <DownloadIcon className="mr-5" />
+    //                       <span className="text-base">{displayText[DisplayTextKeys.EXPORT_TO_XLS]}</span>
+    //                     </div>
+    //                   </ExportCSV>
+    //                 }
+    //               >
+    //                 <ThreeDots className="cursor-pointer h-5 " />
+    //               </Dropdown>
+    //             )}
+    //           </div>
+    //         )}
+    //       </div>
 
-          <div className="flex items-center  text-sm text-black ">
-            <span>{`${numberOfResults} ${displayText[DisplayTextKeys.RESULTS]}`}</span>
-            <div className="flex flex-1 justify-end">
-              <Button
-                isLink={true}
-                isDisable={currentFilters?.selections ? false : true}
-                onClick={onClearFilter}
-                className={`${currentFilters?.selections ? 'text-black' : 'text-gray-300'}`}
-              >
-                {displayText[DisplayTextKeys.CLEAR_FILTER]}
-              </Button>
-            </div>
-          </div>
-        </div>
-        {children}
-      </>
-      <SlideOutPanel
-        showBackButton={slideOutPanelConfig.showBackButton}
-        onBack={slideOutPanelConfig?.onBack || (() => null)}
-        headClassName="bg-vine"
-        isBackgroundDark={true}
-        title={slideOutPanelConfig.title}
-        isOpen={slideOutPanelConfig.open}
-        onClose={() => setSlideOutPanelConfig({ ...slideOutPanelConfig, open: false })}
-      >
-        {slideoutContent &&
-          slideOutPanelConfig.open &&
-          slideOutPanelConfig.view === SlideOutPanelViews.PRODUCT_DETAILS &&
-          openSideoutSidePanel(
-            selectedProduct!,
-            slideOutPanelConfig.timestamp,
-            () => setSlideOutPanelConfig({ ...slideOutPanelConfig, open: false }),
-            (title: string) => setSlideOutPanelConfig({ ...slideOutPanelConfig, title }),
-            slideOutPanelConfig?.isDetailsFetched || false,
-          )}
+    //       <div className="flex items-center  text-sm text-black ">
+    //         <span>{`${numberOfResults} ${displayText[DisplayTextKeys.RESULTS]}`}</span>
+    //         <div className="flex flex-1 justify-end">
+    //           <Button
+    //             isLink={true}
+    //             isDisable={currentFilters?.selections ? false : true}
+    //             onClick={onClearFilter}
+    //             className={`${currentFilters?.selections ? 'text-black' : 'text-gray-300'}`}
+    //           >
+    //             {displayText[DisplayTextKeys.CLEAR_FILTER]}
+    //           </Button>
+    //         </div>
+    //       </div>
+    //     </div>
+    //     {children}
+    //   </>
+    //   <SlideOutPanel
+    //     showBackButton={slideOutPanelConfig.showBackButton}
+    //     onBack={slideOutPanelConfig?.onBack || (() => null)}
+    //     headClassName="bg-vine"
+    //     isBackgroundDark={true}
+    //     title={slideOutPanelConfig.title}
+    //     isOpen={slideOutPanelConfig.open}
+    //     onClose={() => setSlideOutPanelConfig({ ...slideOutPanelConfig, open: false })}
+    //   >
+    //     {slideoutContent &&
+    //       slideOutPanelConfig.open &&
+    //       slideOutPanelConfig.view === SlideOutPanelViews.PRODUCT_DETAILS &&
+    //       openSideoutSidePanel(
+    //         selectedProduct!,
+    //         slideOutPanelConfig.timestamp,
+    //         () => setSlideOutPanelConfig({ ...slideOutPanelConfig, open: false }),
+    //         (title: string) => setSlideOutPanelConfig({ ...slideOutPanelConfig, title }),
+    //         slideOutPanelConfig?.isDetailsFetched || false,
+    //       )}
 
-        {slideOutPanelConfig.view === SlideOutPanelViews.FILTERS && (
-          <PDFilters
-            overrides={filterOverrides}
-            timestamp={slideOutPanelConfig.timestamp}
-            datasource={products}
-            onApplyFilter={onApplyFilter}
-            filters={currentFilters?.selections}
-            onClearFilter={onClearFilter}
-            filterConfigure={filterConfigure}
-            parentCompId={compId}
-          />
-        )}
-      </SlideOutPanel>
-    </SortAndFilterLayoutContext.Provider>
+    //     {slideOutPanelConfig.view === SlideOutPanelViews.FILTERS && (
+    //       <PDFilters
+    //         overrides={filterOverrides}
+    //         timestamp={slideOutPanelConfig.timestamp}
+    //         datasource={products}
+    //         onApplyFilter={onApplyFilter}
+    //         filters={currentFilters?.selections}
+    //         onClearFilter={onClearFilter}
+    //         filterConfigure={filterConfigure}
+    //         parentCompId={compId}
+    //       />
+    //     )}
+    //   </SlideOutPanel>
+    // </SortAndFilterLayoutContext.Provider>
   );
 };
 

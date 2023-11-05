@@ -16,6 +16,7 @@ import { BaseProduct, Product } from '../../types/productType';
 import { useTranslation } from 'react-i18next';
 import { SortByOption, SortByType, StockTotal } from '../../views/Portfolio/types';
 import { DDFilterItem, FilterTypes } from '../Filters/Filters';
+import { AssetType } from 'views/MyCellar/components/types';
 
 enum NoResultsTextKeys {
   TITLE = 'title',
@@ -24,18 +25,23 @@ enum NoResultsTextKeys {
 
 const dateFormat = 'DD MMM YYYY';
 
-interface StockTabProps {
-  datasource: Product[];
+interface IStockItem {
+  id: string;
+  [key: string]: unknown;
+}
+
+interface StockTabProps<T> {
+  datasource: T[];
   loading: boolean;
   error: ApolloError | undefined;
   id?: string;
-  onStateChange?: (tabState: TabState | null) => void;
-  tabState?: TabState | null;
+  onStateChange?: (tabState: TabState<T> | null) => void;
+  tabState?: TabState<T> | null;
   disableTableClick?: boolean;
   columns?: TableColumnType[];
   sortByOptions?: SortByOption[];
   defaultSortBy?: SortByType;
-  refreshTotals?: (tableData: Product[]) => StockTotal[];
+  refreshTotals?: (tableData: T[]) => StockTotal[];
   children?: (context: SortAndFilterLayoutContextType | undefined) => ReactNode;
   filterPanelContainerClassName?: string;
   showCompactSwitch?: boolean;
@@ -44,7 +50,7 @@ interface StockTabProps {
   filterOverrides?: Partial<Record<FilterTypes, unknown>>;
 }
 
-const StockTab: FC<StockTabProps> = ({
+const StockTab = <T extends IStockItem>({
   datasource,
   loading,
   error,
@@ -59,10 +65,10 @@ const StockTab: FC<StockTabProps> = ({
   children,
   filterPanelContainerClassName,
   showCompactSwitch = false,
-  moreSelectorTemplate = null,
+  moreSelectorTemplate,
   filterConfigure,
   filterOverrides,
-}) => {
+}: StockTabProps<T>) => {
   const { t } = useTranslation();
   const [filteredTableData, setFilteredTableData] = useState(datasource);
   const [viewState, setViewState] = useState({
@@ -73,11 +79,11 @@ const StockTab: FC<StockTabProps> = ({
   });
 
   const onTableRowClick = (row: TableRow, openSlideout?: SortAndFilterLayoutContextType['openSlideout']) => {
-    const newProduct = datasource.find((x: BaseProduct) => `${x.id}` === row.id);
-    if (openSlideout) openSlideout(newProduct!);
+    const newProduct = datasource.find((x: T) => `${x.id}` === row.id);
+    // if (openSlideout) openSlideout(newProduct!);
   };
 
-  const buildTableRows = (dataSet: Product[]) => {
+  const buildTableRows = (dataSet: T[]) => {
     return (dataSet || []).map((report) => {
       return {
         ...buildTableRow({ ...report }, columns || [], `${report.id}`, 'divide-x-0'),
@@ -92,13 +98,13 @@ const StockTab: FC<StockTabProps> = ({
     }));
   };
 
-  const refreshBalances = (tableData: Product[]) => {
+  const refreshBalances = (tableData: T[]) => {
     let results = [] as StockTotal[];
     if (refreshTotals) results = refreshTotals(tableData);
     updateViewState('headings', [...results]);
   };
 
-  const onFilter = (filteredData: Product[], newTabState?: TabState | null) => {
+  const onFilter = (filteredData: T[], newTabState?: TabState<T> | null) => {
     if (onStateChange) onStateChange(newTabState || null);
     setFilteredTableData(filteredData);
     updateViewState('rows', buildTableRows(filteredData));
@@ -127,21 +133,21 @@ const StockTab: FC<StockTabProps> = ({
         products={viewState.source || []}
         defaultSortBy={defaultSortBy}
         filterOverrides={filterOverrides}
-        slideoutContent={(
-          productSelected: Product,
-          timestamp: number,
-          onClose?: () => void,
-          setTitle?: (title: string) => void,
-          isDetailsFetched?: boolean,
-        ) => (
-          <ProductSlideout
-            isDetailsFetched={isDetailsFetched}
-            setTitle={setTitle}
-            product={productSelected}
-            timestamp={timestamp}
-            onClose={onClose}
-          />
-        )}
+        // slideoutContent={(
+        //   productSelected: T,
+        //   timestamp: number,
+        //   onClose?: () => void,
+        //   setTitle?: (title: string) => void,
+        //   isDetailsFetched?: boolean,
+        // ) => (
+        //   // <ProductSlideout
+        //   //   isDetailsFetched={isDetailsFetched}
+        //   //   setTitle={setTitle}
+        //   //   product={productSelected}
+        //   //   timestamp={timestamp}
+        //   //   onClose={onClose}
+        //   // />
+        // )}
       >
         <SortAndFilterLayoutContext.Consumer>
           {(context) => {

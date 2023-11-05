@@ -26,10 +26,11 @@ interface SectionProps {
   modelIn: VariationModelType;
   type: string;
   translationKey: string;
+  timestamp?: string;
   onChange?: (upModel: VariationModelType, type: string) => void;
 }
 
-const VariationSection: FC<SectionProps> = ({ modelIn, translationKey, onChange, type = 'variations' }) => {
+const VariationSection: FC<SectionProps> = ({ modelIn, translationKey, timestamp, onChange, type = 'variations' }) => {
   const { t } = useTranslation('portfolio');
   const [model, setModel] = useState<VariationModelType>({} as VariationModelType);
   const [currentEdit, setCurrentEdit] = useState<EditVariationModelType>();
@@ -117,14 +118,14 @@ const VariationSection: FC<SectionProps> = ({ modelIn, translationKey, onChange,
   useEffect(() => {
     setModel(modelIn as VariationModelType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modelIn.units, modelIn.price]);
+  }, [modelIn.units, modelIn.price, timestamp]);
 
   useEffect(() => {
     // onChange?.({ ...model }, type);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [model]);
 
-  console.log('VAR_Model', model);
+  console.log('VARIATION_Model', model);
 
   return (
     <>
@@ -170,6 +171,7 @@ const VariationSection: FC<SectionProps> = ({ modelIn, translationKey, onChange,
                       }
                       onItemSelect={(item: DropdownItem) => {
                         const newVariation = model.variations?.map((x) => {
+                          alert(variation.id);
                           if (x.id === variation.id) {
                             return { ...x, options: x.options?.map((z) => ({ ...z, isDefault: z.id === item.id })) };
                           }

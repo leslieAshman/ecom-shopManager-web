@@ -3,7 +3,7 @@ import { DisplayField, DisplayFieldType, DisplaySection, OverridableFieldType } 
 import DisplayForm, { getFields } from 'components/DisplayForms/DisplayForm';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AssetType } from '../StockMgr/types';
+import { AssetType } from '../types';
 import { DropdownItem, ddlDefaultConfig } from 'components/Dropdown';
 
 const hasCategory = false;
@@ -25,6 +25,7 @@ interface InformationSectionProps {
   type: string;
   translationKey: string;
   onChange?: (upModel: InformationModelType, type: string) => void;
+  timestamp?: string;
 }
 
 const InformationSection: FC<InformationSectionProps> = ({
@@ -32,6 +33,7 @@ const InformationSection: FC<InformationSectionProps> = ({
   translationKey,
   onChange,
   type = 'information',
+  timestamp,
 }) => {
   const { t } = useTranslation('portfolio');
   const [model, setModel] = useState<InformationModelType>({} as InformationModelType);
@@ -147,7 +149,7 @@ const InformationSection: FC<InformationSectionProps> = ({
   useEffect(() => {
     setModel(modelIn);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [timestamp]);
 
   useEffect(() => {
     onChange?.(model, type);

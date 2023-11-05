@@ -33,7 +33,7 @@ export const MiscModal: FC<MiscModalProps> = ({ children }) => {
         </div>
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
         <div
-          className="inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl 
+          className=" max-w-[1200px] inline-block align-center bg-white rounded-lg text-left overflow-hidden shadow-xl 
           transform transition-all sm:my-8 w-[80%]
           sm:align-middle 
            "

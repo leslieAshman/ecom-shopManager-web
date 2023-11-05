@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { AssetType, AssetTypeExtended, IEcommerceInfoType } from './StockMgr/types';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { AssetType, AssetTypeExtended, IEcommerceInfoType } from './types';
 import DisplayForm, { getFields } from 'components/DisplayForms/DisplayForm';
 import { DisplayField, DisplayFieldType, DisplaySection, OverridableFieldType } from 'components/DisplayForms';
 import { getFieldAttributes, getPortfolioDropdownOptions } from 'helpers';
@@ -27,49 +27,12 @@ import { mode } from 'crypto-js';
 import { setIn } from 'formik';
 import { EditVariationModelType } from './AssetEditionSections/editVariation';
 import { color } from 'highcharts';
+import { useExecuteMutation } from 'views/hooks/useExecuteMutation';
+import { ADD_PORTFOLIO_ITEM_MUTATION } from '../graphql/addPortfolioItemMutation';
+import { DELETE_PORTFOLIO_ITEM_MUTATION } from '../graphql/deletePortfolioItemMutation';
 
-export const mockSavedItem: AssetTypeExtended = {
-  id: '',
-  isVisible: true,
-  isAvailable: true,
-  title: 'T-shirt',
-  shopId: '123',
-  isOnPromotion: false,
-  discount: 0,
-  promotionPrice: 0,
-  reviewCount: 0,
-  serviceId: '123',
-  hashTags: ['fahion', 'clothes'],
-  listingType: 'Physical',
-  description:
-    "What is Lorem Ipsum?\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  price: 10,
-
-  buyInfo: [{ text: 'VAT included', color: 'black' }],
-  units: 10,
-  variations: [
-    {
-      name: 'Color',
-      displayText: 'Color',
-      default: '_463711f9-500e-4ae6-a0f4-9b0355a2149a',
-      options: [
-        {
-          // id: '_463711f9-500e-4ae6-a0f4-9b0355a2149a',
-          label: 'Black',
-          color: 'black',
-          priceAdjustment: 0,
-          units: 2,
-          isVisible: true,
-        },
-      ],
-    },
-  ] as IEcommerceInfoType['variations'],
-
-  pic: {
-    createdDate: moment().format(),
-    pic: { image: 'https://tailwindui.com/img/ecommerce-images/product-quick-preview-02-detail.jpg', name: 'Tom Tom' },
-  },
-};
+import ImageViewer from './AssetEditionSections/ImageViewer';
+import { CloseBlackIcon } from 'assets/icons';
 
 const translationKey = 'asset';
 type DropdownItemType = { id: string; value: string; name?: string; _id?: string };
@@ -87,7 +50,13 @@ enum ModelKeys {
 
 const DisplayTextKeys = { ...ModelKeys };
 const hasCategory = false;
-const AssetEditor = () => {
+
+interface AssetEditorProps {
+  onCancel?: () => void;
+  assetModel?: AssetTypeExtended;
+}
+
+const AssetEditor: FC<AssetEditorProps> = ({ assetModel, onCancel }) => {
   const {
     state: {
       auth: { requiredActions },
@@ -104,11 +73,13 @@ const AssetEditor = () => {
   const [stockingModel, setStockingModel] = useState<StockingModelType>({} as StockingModelType);
   const [variationModel, setVariationModel] = useState<VariationModelType>({} as VariationModelType);
   const [hashTags, setHashTags] = useState<string[]>();
+  const [timestamp, setTimestamp] = useState<string>();
 
   const [currentHashTag, setCurrentHashTag] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [policyModel, setPolicyModel] = useState<ModelType>({} as ModelType);
   const [AdditionInfoModel, setAdditionalInfoModel] = useState<ModelType>({} as ModelType);
+  const { executor } = useExecuteMutation(ADD_PORTFOLIO_ITEM_MUTATION);
 
   const isImgPresent = Boolean(
     informationModel.pic &&
@@ -143,38 +114,64 @@ const AssetEditor = () => {
 
   const onCTA: EventArgs['onCTA'] = (evenType, data) => {
     switch (evenType) {
+      case EventTypes.CANCEL:
+        onCancel?.();
+        break;
       case EventTypes.CLOSE:
         if (data === 'preview') setIsModalOpen(false);
         break;
+
+      case EventTypes.DELETE:
+        alert(data as string);
+        return;
+        executor({
+          shopId: '6500ca883a7ced6ccd1efa19',
+          serviceId: data as string,
+        });
+        break;
       case EventTypes.SAVE:
-        const service = {
+        const { modelType, priceMeta, promotionPrice, ...service } = {
           ...informationModel,
           ...pricingModel,
           ...stockingModel,
-          variations: variationModel.variations,
+          variations: variationModel.variations?.map((x) => {
+            return {
+              name: x.name,
+              default: '',
+              displayText: x.name,
+              options: x.options.map((z) => {
+                return {
+                  label: z.label,
+                  color: 'black',
+                  priceAdjustment: z.price,
+                  units: z.qty,
+                  isVisible: z.isVisible,
+                };
+              }),
+            } as any;
+          }),
           hashTags,
           reviewCount: 0,
-        } as Partial<AssetTypeExtended>;
+        } as any;
+
         const selectedQueues = [] as string[];
-        const shopId = portfolios?.[0].shopId;
+        const shopId = '6500ca883a7ced6ccd1efa19';
         const newItem = {
-          selectedQueues,
-          serviceBin: {
-            ...service,
-            prevServiceId: service.serviceId,
-            serviceId: `${shopId}${service.price}${service.title?.replace(/\s/g, '')}${moment().format(
-              'YYYYMMDDHHmmss',
-            )}`,
-            pic: isImgPresent
-              ? {
-                  createdDate: service.pic?.createdDate,
-                  pic: JSON.stringify({
-                    image: service.pic?.pic.image,
-                    name: service.pic?.pic?.name,
-                  }),
-                }
-              : undefined,
-          },
+          ...service,
+          buyInfo: [{ text: 'VAT included', color: 'black' }],
+          prevServiceId: service.serviceId,
+          serviceId: `${shopId}${service.price}${service.title?.replace(/\s/g, '')}${moment().format(
+            'YYYYMMDDHHmmss',
+          )}`,
+          pic: isImgPresent
+            ? {
+                createdDate: service.pic?.createdDate,
+                pic: JSON.stringify({
+                  image: service.pic?.pic.image,
+                  name: service.pic?.pic?.name,
+                }),
+              }
+            : undefined,
         };
 
         console.log('SAVE', {
@@ -186,6 +183,12 @@ const AssetEditor = () => {
           // reviewCount: 0,
           // ...mockPreviewModel2,
           ...newItem,
+        });
+
+        executor({
+          shopId: '6500ca883a7ced6ccd1efa19',
+          item: newItem,
+          selectedQueues: [],
         });
         break;
       default:
@@ -215,7 +218,7 @@ const AssetEditor = () => {
 
   useEffect(() => {
     const modelIn = {
-      ...mockSavedItem,
+      ...assetModel,
       id: '1233',
       shopId: '133SSd',
       isVisible: true,
@@ -245,24 +248,23 @@ const AssetEditor = () => {
       units: modelIn.units,
       price: modelIn.price,
       modelType: 'variations',
-      //   variations: modelIn.variations?.map((x) => {
-      //      return {
-      //       id: x.id,
-      //       name: x.name,
-      //       units: modelIn.units,
-      //       price: modelIn.price,
-      //       modelType: "variation",
-      //       options: x.options.map((y) =>( {
-      //           label: y.label,
-      //           color: color,
-      //           price: y.priceAdjustment,
-      //           qty: y.units,
-      //           isVisible: y.isVisible,
-      //           isDefault:y.id === x.default,
-      //         }))
-
-      //  }
-      // }),
+      variations: modelIn.variations?.map((x) => {
+        return {
+          name: x.name,
+          units: modelIn.units,
+          price: modelIn.price,
+          modelType: 'variation',
+          options: x.options.map((y) => ({
+            label: y.label,
+            displayText: y.label,
+            color: '',
+            price: y.priceAdjustment,
+            qty: y.units,
+            isVisible: y.isVisible,
+            isDefault: false,
+          })),
+        };
+      }),
     } as VariationModelType;
 
     setInformationModel(mInformationModel);
@@ -270,6 +272,7 @@ const AssetEditor = () => {
     setStockingModel(mStockingModel);
     setVariationModel(mVariationModel);
     setHashTags(modelIn.hashTags);
+    setTimestamp(moment().format());
 
     // ...informationModel,
     // ...pricingModel,
@@ -278,7 +281,7 @@ const AssetEditor = () => {
     // hashTags,
     // reviewCount: 0,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [assetModel]);
 
   const finalModel = {
     ...informationModel,
@@ -292,47 +295,34 @@ const AssetEditor = () => {
   console.log('portfolioItem', finalModel);
 
   return (
-    <>
-      <div className="px-4 py-5  overflow-y border-4">
-        <div
-          className="flex flex-col justify-center align-items-center flex-1 mb-3 mr-2 align-self-start"
-          style={{
-            width: '200px',
-            height: '220px',
-          }}
-        >
-          <div
-            className="flex align-items-center
-                      max-w-ws shadow mx-auto border-0
-                      justify-center"
-            style={{
-              maxWidth: '200px',
-              maxHeight: '200px',
-            }}
-          >
-            {/* <QImageEditor onCTA={onImageChange} pic={model.pic.pic || {}} /> */}
-          </div>
-          {isImgPresent && <small className="text-xs text-gray-600">Click on image to edit</small>}
-        </div>
+    <div className="flex-1 px-4 relative py-3 overflow-y-auto h-[calc(100vh-10vh)] ">
+      <CloseBlackIcon onClick={() => onCTA(EventTypes.CANCEL)} className="right-5 top-3 absolute cursor-pointer" />
+      <div className="px-4 py-5  overflow-y">
+        <ImageViewer />
+
         <InformationSection
+          timestamp={timestamp}
           modelIn={informationModel}
           type={ModelKeys.INFORMATION}
           translationKey={translationKey}
           onChange={onModelChange}
         />
         <PricingSection
+          timestamp={timestamp}
           modelIn={pricingModel}
           type={ModelKeys.PRICING}
           translationKey={translationKey}
           onChange={onModelChange}
         />
         <StockingSection
+          timestamp={timestamp}
           modelIn={stockingModel}
           type={ModelKeys.STOCKING}
           translationKey={translationKey}
           onChange={onModelChange}
         />
         <VariationSection
+          timestamp={timestamp}
           modelIn={variationModel}
           type={ModelKeys.VARIATIONS}
           translationKey={translationKey}
@@ -389,7 +379,7 @@ const AssetEditor = () => {
           </div>
         </div>
         <div className="flex py-5 px-1 w-full mt-10">
-          <Button className="btn-outline ml-2 " onClick={() => {}}>
+          <Button className="btn-outline ml-2 " onClick={() => onCTA(EventTypes.CANCEL)}>
             Cancel
           </Button>
           <div className="flex-1"></div>
@@ -408,7 +398,7 @@ const AssetEditor = () => {
           </div>
         </MiscModal>
       )}
-    </>
+    </div>
   );
 };
 

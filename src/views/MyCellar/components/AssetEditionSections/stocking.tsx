@@ -20,10 +20,11 @@ interface SectionProps {
   modelIn: StockingModelType;
   type: string;
   translationKey: string;
+  timestamp?: string;
   onChange?: (upModel: StockingModelType, type: string) => void;
 }
 
-const StockingSection: FC<SectionProps> = ({ modelIn, translationKey, onChange, type = 'stocking' }) => {
+const StockingSection: FC<SectionProps> = ({ modelIn, translationKey, timestamp, onChange, type = 'stocking' }) => {
   const { t } = useTranslation('portfolio');
   const [model, setModel] = useState<StockingModelType>({} as StockingModelType);
 
@@ -80,7 +81,7 @@ const StockingSection: FC<SectionProps> = ({ modelIn, translationKey, onChange, 
   useEffect(() => {
     setModel(modelIn);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [timestamp]);
 
   useEffect(() => {
     onChange?.({ ...model }, type);

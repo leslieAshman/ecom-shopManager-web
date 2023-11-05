@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import moment from 'moment';
-import { useCallback, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DownloadIcon, LocationIcon } from '../../assets/icons';
 import ExportCSV from '../../components/ExportToCsv';
@@ -14,18 +14,27 @@ import { getBlankProduct, getImageUrl, getRegions, onExportToXlsx } from '../../
 import { AppEventTypes } from '../../types/AppType';
 import { NavigationPath } from '../../types/DomainTypes';
 import { Product, BaseProduct, DATA_REFS, StockItem } from '../../types/productType';
-import { capitalizeFirstLetter, sumBy, toInternalId, uniqueItems } from '../../utils';
+import { capitalizeFirstLetter, getRange, pickRandom, sumBy, toInternalId, uniqueItems } from '../../utils';
 import { useExecuteQuery } from '../hooks/useExecuteQuery';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
-import { useLazyExecuteQuery } from '../hooks/useLazyExecuteQuery';
-import { GET_PRODUCT_DETAILS } from '../Portfolio/components/Details/graphql/getProductDetails';
+
 import { initialiseMyCellarExportColumns } from '../Portfolio/helpers';
 import { SortByOption } from '../Portfolio/types';
 import SharedLayout from '../shared/SharedLayout';
-import { GET_MY_CELLAR } from './graphql/myCellar';
+
 import { MiscModal } from 'components/Misc';
-import StockMgr from './components/StockMgr';
+import { GET_PORTFOLIO_ITEMS } from './graphql/getPortfolioDetails';
+import { BaseResponse, ObjectType } from 'types/commonTypes';
+import { AssetType, AssetTypeExtended, IEcommerceInfoType } from './components/types';
+import AssetViewer from './components/AssetViewer';
+import AssetList from './components/AssetList';
+import AssetEditor from './components/AssetEditor';
+import { EventArgs, EventTypes } from 'types';
+import { isObjectType } from 'graphql';
+import Preview, { PreviewModelType } from './components/AssetEditionSections/Preview';
+import { useExecuteMutation } from 'views/hooks/useExecuteMutation';
+import { DELETE_PORTFOLIO_ITEM_MUTATION } from './graphql/deletePortfolioItemMutation';
 
 const MyCellar = () => {
   const { t } = useTranslation();
@@ -42,70 +51,65 @@ const MyCellar = () => {
     defaultSortBy: currentDefaultSortBy,
   } = useMemo(() => initialiseMyCellarExportColumns(t), [t]);
 
+  const { executor: deleteExecutor } = useExecuteMutation(DELETE_PORTFOLIO_ITEM_MUTATION);
+
   const {
-    results: DSFS,
+    results: fetchPortfolioItems,
     loading: loadingMyCellar,
     error: myCellarError,
     refetch: refetchMyCellar,
-  } = useExecuteQuery('portalMyCellar', GET_MY_CELLAR);
+  } = useExecuteQuery('getPortfolioItems', GET_PORTFOLIO_ITEMS, {
+    variables: { shopId: '6500ca883a7ced6ccd1efa19' },
+  });
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    type?: EventTypes;
+    item?: unknown;
+  }>({
+    isOpen: false,
+  });
 
-  const { executor: fetchProductDetails } = useLazyExecuteQuery(GET_PRODUCT_DETAILS);
+  // const { executor: fetchPortfolioItems } = useLazyExecuteQuery(GET_PORTFOLIO_ITEMS);
   const myCellarStock = useMemo(() => {
-    return [] as StockItem[];
-  }, []);
-  const currentTabState = useRef<TabState | null>(null);
+    // if (!loadingMyCellar) {
+    const cellarData = (fetchPortfolioItems as BaseResponse<AssetTypeExtended[]>)?.result?.map((x) => ({
+      ...x,
+      ...x.ecommerceInfo,
+    }));
+
+    return cellarData ?? [];
+    //setFilteredData(cellarData ?? []);
+  }, [fetchPortfolioItems]);
+
+  const currentTabState = useRef<TabState<AssetTypeExtended> | null>(null);
   const pageTitle = 'cellar';
   const title = t(`common:${pageTitle}`);
-  const [filteredData, setFilteredData] = useState<Product[]>([]);
-  const onStateChange = (state: TabState | null) => {
-    const update = state?.filters?.data;
-    if (update !== filteredData) {
-      setFilteredData(update || []);
-    }
-    currentTabState.current = state;
-  };
 
   const stocks = useMemo(() => {
-    const adjustQtySource = (myCellarStock as BaseProduct[])
-      .map((x) => ({ ...getBlankProduct(), ...x }))
-      .map((x) => {
-        return {
-          ...x,
-          qty: x.rotationNumber && x.rotationNumber.length > 0 ? 1 : x.qty,
-          [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
-        };
-      });
-    return adjustQtySource;
+    return myCellarStock;
   }, [myCellarStock]);
 
-  const { isLoading, results, lastItemRef } = useInfiniteScroll(filteredData);
-  const processIntersectionObserverEntry = useCallback((entry: IntersectionObserverEntry) => {
-    entry.target.classList.toggle('flex', entry.isIntersecting);
-  }, []);
-
-  const { isItemVisible, fadeOnScrollClassName } = useFadeInOnScroll({ isLoading, processIntersectionObserverEntry });
-
   const statuses = useMemo(() => {
-    return uniqueItems((myCellarStock as StockItem[]).map((x) => x.status));
+    return uniqueItems((myCellarStock as AssetTypeExtended[]).map((x) => x.serviceId));
   }, [myCellarStock]);
 
   const totals = useMemo(() => {
-    const adjustQtySource = filteredData.map((x) => {
-      return {
-        ...x,
-        cases: x.rotationNumber && x.rotationNumber.length > 0 ? 1 : x.qty,
-        bottles: x.rotationNumber && x.rotationNumber.length > 0 ? x.unitCount : x.qty * x.unitCount,
-      };
-    });
+    // const adjustQtySource = stocks.map((x) => {
+    //   return {
+    //     ...x,
+    //     cases: x.rotationNumber && x.rotationNumber.length > 0 ? 1 : x.qty,
+    //     bottles: x.rotationNumber && x.rotationNumber.length > 0 ? x.unitCount : x.qty * x.unitCount,
+    //   };
+    // });
 
-    const bottles = sumBy(adjustQtySource, 'bottles');
-    const cases = sumBy(adjustQtySource, 'cases');
+    const items = stocks.length;
+    const stockItems = sumBy(stocks, 'units');
     return {
-      cases,
-      bottles,
+      items,
+      stockItems,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredData]);
+  }, [stocks]);
 
   const onItemSelect = (item: Product, context: SortAndFilterLayoutContextType | undefined) => {
     // context!.openSlideoutWithProcessor(
@@ -126,6 +130,77 @@ const MyCellar = () => {
     // );
   };
 
+  const onCTA: EventArgs['onCTA'] = (eventType, data) => {
+    switch (eventType) {
+      case EventTypes.CLOSE:
+        setModalState({ ...modalState, isOpen: false });
+        break;
+
+      case EventTypes.PREVIEW:
+        const {
+          title: itemTitle,
+          price,
+          units,
+          description,
+          isOnPromotion,
+          buyInfo,
+          pic,
+          ratings,
+          variations,
+        } = data as AssetTypeExtended;
+        const previewModel = {
+          title: itemTitle,
+          price,
+          units,
+          description,
+          isOnPromotion,
+          promotionPrice: 0,
+          priceMeta: buyInfo?.map((x) => x.text),
+          pic,
+          reviewCount: 0,
+          ratings: ratings ?? 0,
+          variations: variations?.map((x) => {
+            return {
+              name: x.name,
+              units,
+              price,
+              modelType: 'variation',
+              options: x.options.map((y) => ({
+                label: y.label,
+                displayText: y.label,
+                color: '',
+                price: y.priceAdjustment,
+                qty: y.units,
+                isVisible: y.isVisible,
+                isDefault: false,
+              })),
+            };
+          }),
+        };
+
+        setModalState({ ...modalState, type: EventTypes.PREVIEW, item: previewModel, isOpen: true });
+        break;
+
+      case EventTypes.EDIT:
+        setModalState({ ...modalState, type: EventTypes.EDIT, item: data, isOpen: true });
+        break;
+
+      case EventTypes.NEW:
+        setModalState({ isOpen: true, type: EventTypes.EDIT, item: null });
+        break;
+
+      case EventTypes.DELETE:
+        deleteExecutor({
+          shopId: '6500ca883a7ced6ccd1efa19',
+          serviceId: data as string,
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
+
   useLayoutEffect(() => {
     if (refresh && (refresh as string[]).length > 0 && (refresh as string[]).includes(NavigationPath.MY_CELLAR)) {
       refetchMyCellar();
@@ -137,6 +212,18 @@ const MyCellar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh]);
 
+  // useEffect(() => {
+  //   if (!loadingMyCellar) {
+  //     const cellarData = (fetchPortfolioItems as BaseResponse<AssetTypeExtended[]>)?.result?.map((x) => ({
+  //       ...x,
+  //       ...x.ecommerceInfo,
+  //     }));
+  //     setFilteredData(cellarData ?? []);
+  //   }
+  // }, [fetchPortfolioItems, loadingMyCellar]);
+
+  //return <AssetViewer />;
+  //return <AssetList />;
   return (
     <>
       <SharedLayout view={NavigationPath.MY_CELLAR} title={title} onBack={() => null} showBackButton={false}>
@@ -149,14 +236,137 @@ const MyCellar = () => {
           <>
             <div className="p-5 flex justify-center items-center">
               <div className="flex divide-x divide-gray-300">
-                {[`${totals.cases} cases`, `${totals.bottles} bottles`].map((x, index) => (
+                {[`${totals.items} Stock`, `${totals.stockItems} Items`].map((x, index) => (
                   <div key={`item-${index}`} className="text-base px-3">
                     {x}
                   </div>
                 ))}
               </div>
             </div>
-            <StockTab
+            <div>
+              <AssetList items={stocks} onCTA={onCTA} />
+            </div>
+
+            {/* <div className="bg-white">
+              <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                <h2 className="sr-only">Products</h2>
+                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                  {results.map((item, index) => {
+                    // let lastElemRefOption = { ref: isItemVisible };
+                    // if (results.length === index + 1) {
+                    //   lastElemRefOption = { ref: lastItemRef };
+                    // }
+                    const id = `${item.id}-${index}`;
+                    const name = `${item.title}`;
+                    // const qtyString = `${item.ecommerceInfo?.units}`;
+
+                    const regionColor = undefined;
+                    const textColor = `text-black`;
+
+                    const itemImage = 'https://tailwindui.com/img/ecommerce-images/product-quick-preview-02-detail.jpg';
+                    const image = (
+                      <div className="h-[130px]">
+                        <img className="img h-full" alt={name} src={itemImage} />
+                      </div>
+                    );
+                    return (
+                      <a key={id} className="group">
+                        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                          <img
+                            src={itemImage}
+                            alt={name}
+                            className="h-full w-full object-cover object-center group-hover:opacity-75"
+                          />
+                        </div>
+                        <h3 className="mt-4 text-sm text-gray-700">{name}</h3>
+                        <p className="mt-1 text-14 font-medium text-gray-900">{item.price}</p>
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
+            </div> */}
+            {/* <div className="flex gap-[24px] flex-wrap justify-center overflow-hidden overflow-y-auto  flex-1 bg-gray-100 p-7">
+              {results.map((item, index) => {
+                let lastElemRefOption = { ref: isItemVisible };
+                if (results.length === index + 1) {
+                  lastElemRefOption = { ref: lastItemRef };
+                }
+                const id = `${item.id}-${index}`;
+                const name = `${item.title}`;
+                const qtyString = `${item.ecommerceInfo?.units}`;
+                //   (x) => x.id === toInternalId(item?.cultWinesAllocationRegion!.toLowerCase()),
+                // );
+                const regionColor = undefined;
+                const textColor = `text-black`;
+                const itemImage = 'https://tailwindui.com/img/ecommerce-images/product-quick-preview-02-detail.jpg';
+                const image = (
+                  <div className="h-[130px]">
+                    <img className="img h-full" alt={title} src={itemImage} />
+                  </div>
+                );
+
+                return (
+                  <ImageCard
+                    {...lastElemRefOption}
+                    key={id}
+                    id={id}
+                    image={image}
+                    onClick={() => null}
+                    className={`${fadeOnScrollClassName} sm:w-[302px] w-full`}
+                    imageClassName="w-full"
+                  >
+                    <div className="w-full flex-1">
+                      <div className="relative space-y-[4px] flex flex-col border-none ">
+                        <div className="whitespace-nowrap truncate text-20">{name}</div>
+                      </div>
+                      <div
+                        style={{ background: regionColor! }}
+                        className={`flex  justify-center items-center border w-fit px-3 py-[2px] rounded-full h-auto mt-1 ${textColor}`}
+                      >
+                        <div className="w-fit whitespace-nowrap text-center font-semibold text-sm">
+                          {capitalizeFirstLetter('selectedRegion')}
+                        </div>
+                      </div>
+                      <div className="text-14 whitespace-nowrap truncate mt-2">{qtyString}</div>
+                      <div className="text-sm py-3 flex divide-x divide-gray-300 ">
+                        <span className="pr-3">{`${moment().format('DD MMM YYYY')}`.toUpperCase()}</span>
+                        <span className="px-3">Deal Ref</span>
+
+                      </div>
+                    </div>
+                    <div className="text-sm flex w-full ">
+                      <div className="mr-3 flex  flex-1 text-xs">
+                        <LocationIcon className="mr-1 " />
+                        Location
+                      </div>
+                      <div
+                        onClick={() =>
+                          setModalState({
+                            ...modalState,
+                            type: EventTypes.EDIT,
+                            item: item as unknown,
+                            isOpen: true,
+                          })
+                        }
+                        className="flex cursor-pointer  justify-center items-center px-3 rounded-full text-xs bg-[#FEF4EE] h-[20px]"
+                      >
+                        Edit
+                      </div>
+
+                      <div
+                        onClick={() => onCTA(EventTypes.PREVIEW, item as unknown)}
+                        className="flex cursor-pointer ml-2  justify-center items-center px-3 rounded-full text-xs bg-[#FEF4EE] h-[20px]"
+                      >
+
+                        View
+                      </div>
+                    </div>
+                  </ImageCard>
+                );
+              })}
+            </div> */}
+            {/* <StockTab
               columns={columns}
               sortByOptions={sortByOptions as SortByOption[]}
               defaultSortBy={currentDefaultSortBy}
@@ -177,7 +387,7 @@ const MyCellar = () => {
               )}
               tabState={null}
               id={'myCellar'}
-              datasource={stocks}
+              datasource={stocks as any}
               onStateChange={onStateChange}
               loading={loadingMyCellar}
               error={myCellarError}
@@ -204,80 +414,73 @@ const MyCellar = () => {
               }}
             >
               {(context) => (
-                <div className="flex   gap-[24px] flex-wrap justify-center overflow-hidden overflow-y-auto  flex-1 bg-gray-100 p-7">
-                  {results.map((item, index) => {
-                    let lastElemRefOption = { ref: isItemVisible };
-                    if (results.length === index + 1) {
-                      lastElemRefOption = { ref: lastItemRef };
-                    }
-                    const id = `${item.id}-${index}`;
-                    const name = `${item.vintage} ${item.wineName}`;
-                    const qtyString = `${item.qty}x (${item.unit})`;
-                    const selectedRegion = regions.find(
-                      (x) => x.id === toInternalId(item?.cultWinesAllocationRegion!.toLowerCase()),
-                    );
-                    const regionColor = selectedRegion?.color;
-                    const textColor = `text-${selectedRegion?.textColor || 'black'}`;
-                    const { dealDate, dealRef, rotationNumber, imageFileName, location, status } = item;
-                    const itemImage = getImageUrl(imageFileName || '', { height: 200 });
-                    const image = (
-                      <div className="h-[130px]">
-                        <img className="img h-full" alt={title} src={itemImage} />
-                      </div>
-                    );
-                    return (
-                      <ImageCard
-                        {...lastElemRefOption}
-                        key={id}
-                        id={id}
-                        image={image}
-                        onClick={() => onItemSelect(item, context)}
-                        className={`${fadeOnScrollClassName} sm:w-[302px] w-full`}
-                        imageClassName="w-full"
-                      >
-                        <div className="w-full flex-1">
-                          <div className="relative space-y-[4px] flex flex-col border-none ">
-                            <div className="whitespace-nowrap truncate text-20">{name}</div>
-                          </div>
-                          <div
-                            style={{ background: regionColor! }}
-                            className={`flex  justify-center items-center border w-fit px-3 py-[2px] rounded-full h-auto mt-1 ${textColor}`}
-                          >
-                            <div className="w-fit whitespace-nowrap text-center font-semibold text-sm">
-                              {capitalizeFirstLetter(item.cultWinesAllocationRegion!)}
-                            </div>
-                          </div>
-                          <div className="text-14 whitespace-nowrap truncate mt-2">{qtyString}</div>
-                          <div className="text-sm py-3 flex divide-x divide-gray-300 ">
-                            <span className="pr-3">{`${moment(dealDate).format('DD MMM YYYY')}`.toUpperCase()}</span>
-                            <span className="px-3">{dealRef}</span>
-                            {rotationNumber && <span className="pl-3"> {rotationNumber}</span>}
-                          </div>
-                        </div>
-                        <div className="text-sm flex w-full ">
-                          <div className="mr-3 flex  flex-1 text-xs">
-                            <LocationIcon className="mr-1 " />
-                            {location}
-                          </div>
-                          <div className="flex  justify-center items-center px-3 rounded-full text-xs bg-[#FEF4EE] h-[20px]">
-                            <div className="w-[4px] h-[4px] rounded-full bg-[#F09555] mr-2"></div>
-                            {status}
-                          </div>
-                        </div>
-                      </ImageCard>
-                    );
-                  })}
-                </div>
+             
               )}
-            </StockTab>
+            </StockTab> */}
           </>
         )}
       </SharedLayout>
-      <MiscModal>
-        <StockMgr />
-      </MiscModal>
+      {modalState.isOpen && (
+        <MiscModal>
+          {/* <StockMgr /> */}
+          {modalState.type === EventTypes.EDIT && (
+            <AssetEditor
+              assetModel={modalState.item as AssetTypeExtended}
+              onCancel={() => onCTA(EventTypes.CLOSE, { isOpen: false })}
+            />
+          )}
+          {modalState.type === EventTypes.PREVIEW && (
+            <div className="flex-1 px-4 relative py-3 overflow-y-auto h-[calc(100vh-20vh)]">
+              <Preview onCTA={onCTA} modelIn={modalState.item as PreviewModelType} />
+            </div>
+          )}
+        </MiscModal>
+      )}
     </>
   );
 };
 
 export default MyCellar;
+
+export const mockSavedItem: AssetTypeExtended = {
+  id: '',
+  isVisible: true,
+  isAvailable: true,
+  title: 'T-shirt',
+  shopId: '123',
+  isOnPromotion: false,
+  discount: 0,
+  promotionPrice: 0,
+  reviewCount: 0,
+  serviceId: '123',
+  hashTags: ['fahion', 'clothes'],
+  listingType: 'Physical',
+  description:
+    "What is Lorem Ipsum?\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+  price: 12.49,
+
+  buyInfo: [{ text: 'VAT included', color: 'black' }],
+  units: 15,
+  variations: [
+    {
+      name: 'Color',
+      displayText: 'Color',
+      default: '_463711f9-500e-4ae6-a0f4-9b0355a2149a',
+      options: [
+        {
+          // id: '_463711f9-500e-4ae6-a0f4-9b0355a2149a',
+          label: 'Black',
+          color: 'black',
+          priceAdjustment: 0,
+          units: 2,
+          isVisible: true,
+        },
+      ],
+    },
+  ] as IEcommerceInfoType['variations'],
+
+  pic: {
+    createdDate: moment().format(),
+    pic: { image: 'https://tailwindui.com/img/ecommerce-images/product-quick-preview-02-detail.jpg', name: 'Tom Tom' },
+  },
+};

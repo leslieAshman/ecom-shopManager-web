@@ -52,7 +52,7 @@ export interface IEcommerceInfoType {
 }
 
 export interface AssetType {
-  id?: string;
+  id: string;
   title: string;
   price: number;
   listingType: string;
@@ -79,3 +79,5 @@ export interface AssetType {
 
 export type AssetTypeExtended = AssetType &
   Partial<IEcommerceInfoType> & { reviewCount: number; promotionPrice: number };
+
+export type AssetTypeSummary = Pick<AssetTypeExtended, 'id' | 'title' | 'price' | 'category' | 'serviceId'>;

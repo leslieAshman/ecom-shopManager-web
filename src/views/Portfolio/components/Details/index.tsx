@@ -14,6 +14,7 @@ import { useExecuteQuery } from '../../../hooks/useExecuteQuery';
 import { PORTFOLIO_CURRENT_HOLDINGS } from './graphql';
 import { GET_SOLD_STOCKS } from './graphql/getSoldStocks';
 import { GET_EXTERNAL_STOCKS } from './graphql/getExternalStocks';
+import { AssetType, AssetTypeExtended } from 'views/MyCellar/components/types';
 enum TabTypes {
   CURRENT = 'current',
   SOLD = 'sold',
@@ -39,7 +40,7 @@ const Details = () => {
     [TabTypes.SOLD]: null,
     [TabTypes.EXTERNAL]: null,
   });
-  const currentTabState = useRef<TabState | null>(null);
+  const currentTabState = useRef<TabState<AssetType> | null>(null);
   const [selectedTab, setSelectedTab] = useState(TabTypes.CURRENT);
   const {
     columns,
@@ -56,7 +57,7 @@ const Details = () => {
     sortByOptions: externalSortByOptions,
     defaultSortBy: externalDefaultSortBy,
   } = useMemo(() => initialiseExternalTab(t, formatter), [t, formatter]);
-  const onStateChange = (state: TabState | null) => {
+  const onStateChange = (state: TabState<AssetType> | null) => {
     currentTabState.current = state;
   };
 
@@ -208,7 +209,7 @@ const Details = () => {
         title: <span className="text-14">{capitalizeFirstLetter(t(`portfolio:${TabTypes.CURRENT}`))}</span>,
         content: () => (
           <StockTab
-            refreshTotals={refreshCurrentStocksTotals}
+            refreshTotals={refreshCurrentStocksTotals as any}
             showCompactSwitch={true}
             columns={columns}
             sortByOptions={sortByOptions as SortByOption[]}
@@ -216,9 +217,11 @@ const Details = () => {
             tabState={tabStates[selectedTab]}
             filterPanelContainerClassName="px-5"
             id={TabTypes.CURRENT}
-            datasource={(currentHoldings as Product[]).map((x) => ({
+            datasource={(currentHoldings as AssetTypeExtended[]).map((x) => ({
               ...x,
-              [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+              id: x.id,
+              unit: Number(x.units),
+              // [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
             }))}
             onStateChange={onStateChange}
             loading={loadingCurrent}
@@ -232,7 +235,7 @@ const Details = () => {
         title: <span className="text-14">{capitalizeFirstLetter(t(`portfolio:${TabTypes.SOLD}`))}</span>,
         content: () => (
           <StockTab
-            refreshTotals={refreshSoldStocksTotals}
+            refreshTotals={refreshSoldStocksTotals as any}
             columns={soldStockColumns}
             sortByOptions={soldSortByOptions}
             defaultSortBy={soldDefaultSortBy}
@@ -242,13 +245,13 @@ const Details = () => {
             filterOverrides={{
               [FilterTypes.STATUES]: {
                 source: [t('portfolio:filters.processing'), t('portfolio:filters.sold')],
-                filterFn: (data: Product[], ids: string[]) => {
-                  let statusesFilterResult: Product[] = [];
-                  uniqueItems(data.map((x) => x.status)).forEach((status) => {
+                filterFn: (data: AssetTypeExtended[], ids: string[]) => {
+                  let statusesFilterResult: AssetTypeExtended[] = [];
+                  uniqueItems(data.map((x) => x.id)).forEach((status) => {
                     if (ids.includes(toInternalId(status!))) {
                       statusesFilterResult = [
                         ...statusesFilterResult,
-                        ...data.filter((x) => x.status?.toLowerCase() === status?.toLowerCase()),
+                        ...data.filter((x) => x.id?.toLowerCase() === status?.toLowerCase()),
                       ];
                     }
                   });
@@ -257,10 +260,11 @@ const Details = () => {
               },
             }}
             filterPanelContainerClassName="px-5"
-            datasource={(soldStocks as Product[]).map((x, i) => ({
+            datasource={(soldStocks as AssetTypeExtended[]).map((x, i) => ({
               ...x,
+              unit: Number(x.units),
               lwin18: `${i + 1}`,
-              [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+              // [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
             }))}
             onStateChange={onStateChange}
             loading={loadingSoldStocks}
@@ -274,7 +278,7 @@ const Details = () => {
         title: <span className="text-14">{capitalizeFirstLetter(t(`portfolio:${TabTypes.EXTERNAL}`))}</span>,
         content: () => (
           <StockTab
-            refreshTotals={refreshExternalStocksTotals}
+            refreshTotals={refreshExternalStocksTotals as any}
             columns={externaltockColumns}
             sortByOptions={externalSortByOptions}
             defaultSortBy={externalDefaultSortBy}
@@ -286,9 +290,10 @@ const Details = () => {
             }}
             filterPanelContainerClassName="px-5"
             id={TabTypes.EXTERNAL}
-            datasource={(externalStocks as Product[]).map((x) => ({
+            datasource={(externalStocks as AssetTypeExtended[]).map((x) => ({
               ...x,
-              [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+              unit: Number(x.units),
+              // [DATA_REFS.SANITIZED_WINE_NAME]: x[DATA_REFS.NAME].normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
             }))}
             loading={loadingExternal}
             error={externalError}

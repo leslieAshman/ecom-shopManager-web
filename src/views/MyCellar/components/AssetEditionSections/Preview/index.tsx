@@ -6,9 +6,9 @@ import { EventArgs } from 'types';
 import moment from 'moment';
 
 const Preview: FC<PreviewProps> = ({ onCTA, modelIn }) => {
-  console.log('Preview', modelIn);
+  console.log('Previewdsd', modelIn);
   return (
-    <div className="flex w-full h-full bg-red">
+    <div className="flex w-full h-full bg-red ">
       <Preview1 modelIn={modelIn} onCTA={onCTA} type={PreviewType} />
     </div>
   );

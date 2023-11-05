@@ -126,11 +126,12 @@ const EditVariation: FC<EditVariationProps> = ({ type, modelIn, onCTA }) => {
   }, []);
 
   useEffect(() => {
+    console.log('modelIn', model, modelIn);
     setModel({ ...getBlankModel(), ...modelIn, price: modelIn?.price ?? 0 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  if (!Object.keys(model).length) return null;
 
-  console.log('modelIn', model);
   return (
     <div className="flex flex-col w-full space-y-5 py-5">
       {Object.keys(error).length > 0 && (
@@ -207,7 +208,7 @@ const EditVariation: FC<EditVariationProps> = ({ type, modelIn, onCTA }) => {
                         }}
                       >
                         <span className="flex-col flex w-full pr-5">
-                          <span className="flex-1">{x.displayText} </span>
+                          <span className="flex-1">{x.displayText ?? x.label} </span>
                           <span className="text-gray-400 text-sm">
                             qty:
                             <span className="pl-1 pr-3 font-bold text-black">{` ${x.qty}`}</span>
@@ -324,7 +325,9 @@ const EditVariation: FC<EditVariationProps> = ({ type, modelIn, onCTA }) => {
           placeholder="Default option"
           valueTemplate={
             <div className="">
-              <span className="truncate block">{model.options?.find((x) => x.isDefault)?.displayText ?? ''}</span>
+              <span className="truncate block">
+                {(model.options?.find((x) => x.isDefault) ?? (model.options ?? [{ displayText: '' }])[0]).displayText}
+              </span>
             </div>
           }
           onItemSelect={(item: DropdownItem) => {

@@ -10,7 +10,7 @@ import { getRegions } from '../../helpers';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 import './filterDatePicker.css';
-import { DATA_REFS, Product } from '../../types/productType';
+import { DATA_REFS } from '../../types/productType';
 import DateFilter, { DateFilters, DateType } from './dateFilter';
 
 export interface FilterDDType {
@@ -26,7 +26,7 @@ export type DDConfig = Record<string, unknown> & {
 
 interface CustomFilter {
   source: string[];
-  filterFn: (data: Product[], ids: string[]) => Product[];
+  filterFn: <T>(data: T[], ids: string[]) => T[];
 }
 
 const buildSelectText = (ddFilters: DDFilterItem[], type: string, selectedIds: string[], allItemId: string) => {
@@ -137,10 +137,10 @@ interface DropdownConfig {
 
 export type Filters = DateFilters & DropdownConfig & { soldDate: DateFilters };
 
-interface PDFiltersProp {
-  datasource: Product[];
+interface PDFiltersProp<T> {
+  datasource: T[];
   filters?: Filters;
-  onApplyFilter: (filterResults: Product[], filters?: Filters) => void;
+  onApplyFilter: (filterResults: T[], filters?: Filters) => void;
   onClearFilter?: () => void;
   timestamp: number;
   filterConfigure?: (filters: DDFilterItem[]) => DDFilterItem[];
@@ -149,7 +149,7 @@ interface PDFiltersProp {
 }
 const allItems = 'allitems';
 
-const PDFilters: FC<PDFiltersProp> = ({
+const PDFilters = <T extends { id: string; title?: string }>({
   datasource,
   onApplyFilter,
   filters,
@@ -157,7 +157,7 @@ const PDFilters: FC<PDFiltersProp> = ({
   filterConfigure,
   overrides,
   parentCompId,
-}) => {
+}: PDFiltersProp<T>) => {
   const { t } = useTranslation();
   const [currentTimestamp, setCurrentTimestamp] = useState<number>(timestamp);
   const regions = useMemo(
@@ -271,7 +271,7 @@ const PDFilters: FC<PDFiltersProp> = ({
   );
   const [dropdownConfig, setDropDownConfig] = useState<DropdownConfig>(defaultConfig);
 
-  const [filteredData, setFilteredData] = useState<Product[]>([...datasource]);
+  const [filteredData, setFilteredData] = useState<T[]>([...datasource]);
 
   const updateFilterConfig = (key: FilterTypes, updates: Record<string, unknown>) => {
     setDropDownConfig({
@@ -300,7 +300,7 @@ const PDFilters: FC<PDFiltersProp> = ({
   );
 
   const vintageFilters = useMemo(() => {
-    const source = uniqueItems([...datasource.map((x) => x.vintage)])
+    const source = uniqueItems([...datasource.map((x) => x.id)])
       .filter((v, i, a) => a.indexOf(v) === i)
       .filter((x) => Number(x) !== 0)
       .sort((a: string, b: string) => (Number(a) < Number(b) ? 1 : -1));
@@ -328,13 +328,13 @@ const PDFilters: FC<PDFiltersProp> = ({
     return {
       [FilterTypes.STATUES]: {
         source: [displayText.FOR_SALE, displayText.NOT_FOR_SALE],
-        filterFn: (data: Product[], ids: string[]) => {
-          let statusesFilterResult: Product[] = [];
+        filterFn: (data: T[], ids: string[]) => {
+          let statusesFilterResult: T[] = [];
           if (ids.includes(toInternalId(displayText.FOR_SALE))) {
-            statusesFilterResult = [...statusesFilterResult, ...data.filter((x) => x.qtyForSale > 0)];
+            statusesFilterResult = [...statusesFilterResult, ...data.filter((x) => true)];
           }
           if (ids.includes(toInternalId(displayText.NOT_FOR_SALE))) {
-            statusesFilterResult = [...statusesFilterResult, ...data.filter((x) => x.qtyForSale === 0)];
+            statusesFilterResult = [...statusesFilterResult, ...data.filter((x) => true)];
           }
           return statusesFilterResult;
         },
@@ -396,7 +396,7 @@ const PDFilters: FC<PDFiltersProp> = ({
     );
     return (source.length > 1 ? [allItems, ...source] : source).map((item) => {
       const text = item === allItems ? displayText.ALL_WINE_NAME_TEXT : item;
-      const identifier = toInternalId(item);
+      const identifier = toInternalId(item as string);
       const isItemSelected = (dropdownConfig.wineNames.selectedIds as string[]).includes(identifier);
 
       return {
@@ -455,21 +455,21 @@ const PDFilters: FC<PDFiltersProp> = ({
   };
 
   const updateFilteredDatasource = () => {
-    let data: Product[] = [...datasource];
+    let data: T[] = [...datasource];
 
     const selectedRegions = dropdownConfig[FilterTypes.REGIONS].selectedIds;
     if (selectedRegions.length > 0) {
-      data = data.filter((x) => selectedRegions.includes(x.region.toLowerCase()));
+      data = data.filter((x) => selectedRegions.includes(x.id.toLowerCase()));
     }
 
     const selectedVintages = dropdownConfig[FilterTypes.VINTAGES].selectedIds;
     if (selectedVintages.length > 0) {
-      data = data.filter((x) => selectedVintages.includes(x.vintage));
+      data = data.filter((x) => selectedVintages.includes(x.id));
     }
 
     const selectedWineNames = dropdownConfig[FilterTypes.WINE_NAMES].selectedIds;
     if (selectedWineNames.length > 0) {
-      data = data.filter((x) => selectedWineNames.includes(toInternalId(x.wineName)));
+      data = data.filter((x) => selectedWineNames.includes(toInternalId(x.title ?? '')));
     }
 
     Object.keys(customFilters).forEach((key) => {
@@ -490,28 +490,28 @@ const PDFilters: FC<PDFiltersProp> = ({
     const selectedProfitLoss = dropdownConfig[FilterTypes.P_AND_L].selectedIds;
     if (selectedProfitLoss.length > 0) {
       const plDatasource = [...data];
-      let profitLossFilterResult: Product[] = [];
+      // let profitLossFilterResult: T[] = [];
       const ids = selectedProfitLoss.map((x) => toInternalId(x).toLowerCase());
-      if (ids.includes(toInternalId(displayText.PROFIT))) {
-        profitLossFilterResult = [...profitLossFilterResult, ...plDatasource.filter((x) => x.profitAndLoss >= 0)];
-      }
-      if (ids.includes(toInternalId(displayText.LOSS))) {
-        profitLossFilterResult = [...profitLossFilterResult, ...plDatasource.filter((x) => x.profitAndLoss < 0)];
-      }
-      data = [...profitLossFilterResult];
+      // if (ids.includes(toInternalId(displayText.PROFIT))) {
+      //   profitLossFilterResult = [...profitLossFilterResult, ...plDatasource.filter((x) => x.profitAndLoss >= 0)];
+      // }
+      // if (ids.includes(toInternalId(displayText.LOSS))) {
+      //   profitLossFilterResult = [...profitLossFilterResult, ...plDatasource.filter((x) => x.profitAndLoss < 0)];
+      // }
+      // data = [...profitLossFilterResult];
     }
 
-    if (dateFilters[DateType.START])
-      data = data.filter(
-        (x) =>
-          moment(x.dealDate).isBetween(moment(dateFilters[DateType.START]), moment(dateFilters[DateType.END])) ||
-          moment(x.dealDate).isSame(moment(dateFilters[DateType.START])) ||
-          moment(x.dealDate).isSame(moment(dateFilters[DateType.END])),
-      );
+    // if (dateFilters[DateType.START])
+    // data = data.filter(
+    //   (x) =>
+    //     moment(x.dealDate).isBetween(moment(dateFilters[DateType.START]), moment(dateFilters[DateType.END])) ||
+    //     moment(x.dealDate).isSame(moment(dateFilters[DateType.START])) ||
+    //     moment(x.dealDate).isSame(moment(dateFilters[DateType.END])),
+    // );
 
-    if (parentCompId === 'sold') {
-      data = filterByDate(data, 'soldDate', soldDateFilters);
-    }
+    // if (parentCompId === 'sold') {
+    //   data = filterByDate(data, 'soldDate', soldDateFilters);
+    // }
 
     setFilteredData(data);
   };
